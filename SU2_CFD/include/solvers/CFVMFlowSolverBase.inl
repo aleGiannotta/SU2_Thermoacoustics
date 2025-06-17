@@ -885,6 +885,9 @@ void CFVMFlowSolverBase<V, R>::LoadRestart_impl(CGeometry **geometry, CSolver **
           nodes->SetSolution(iPoint_Local, SolutionRestart);
         }
 
+ 
+        // nodes->Set_Density_time_n(iPoint_Local, Restart_Data[index + nVar_Restart]); 
+
         /*--- For dynamic meshes, read in and store the
         grid coordinates and grid velocities for each node. ---*/
 
@@ -896,6 +899,7 @@ void CFVMFlowSolverBase<V, R>::LoadRestart_impl(CGeometry **geometry, CSolver **
 
           /*--- Rewind the index to retrieve the Coords. ---*/
           index = counter * Restart_Vars[1];
+
           const auto* Coord = &Restart_Data[index];
 
           su2double GridVel[MAXNDIM] = {0.0};
@@ -917,6 +921,7 @@ void CFVMFlowSolverBase<V, R>::LoadRestart_impl(CGeometry **geometry, CSolver **
         if (static_fsi && update_geo) {
         /*--- Rewind the index to retrieve the Coords. ---*/
           index = counter*Restart_Vars[1];
+         
           const auto* Coord = &Restart_Data[index];
 
           for (auto iDim = 0u; iDim < nDim; iDim++) {
@@ -1072,6 +1077,7 @@ void CFVMFlowSolverBase<V, R>::PushSolutionBackInTime(unsigned long TimeIter, bo
   for (unsigned short iMesh = 0; iMesh <= config->GetnMGLevels(); iMesh++) {
     solver_container[iMesh][FLOW_SOL]->GetNodes()->Set_Solution_time_n();
     solver_container[iMesh][FLOW_SOL]->GetNodes()->Set_Solution_time_n1();
+    solver_container[iMesh][FLOW_SOL]->GetNodes()->Set_Density_time_n();
     if (rans) {
       solver_container[iMesh][TURB_SOL]->GetNodes()->Set_Solution_time_n();
       solver_container[iMesh][TURB_SOL]->GetNodes()->Set_Solution_time_n1();
@@ -1102,6 +1108,7 @@ void CFVMFlowSolverBase<V, R>::PushSolutionBackInTime(unsigned long TimeIter, bo
 
     for (unsigned short iMesh = 0; iMesh <= config->GetnMGLevels(); iMesh++) {
       solver_container[iMesh][FLOW_SOL]->GetNodes()->Set_Solution_time_n();
+      solver_container[iMesh][FLOW_SOL]->GetNodes()->Set_Density_time_n();
       if (rans) solver_container[iMesh][TURB_SOL]->GetNodes()->Set_Solution_time_n();
 
       geometry[iMesh]->nodes->SetVolume_n();

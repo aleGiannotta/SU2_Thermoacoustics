@@ -639,7 +639,7 @@ void CScalarSolver<VariableType>::SetResidual_DualTime(CGeometry* geometry, CSol
           of the solution vector it's neither stored for previous time steps
           nor updated with the solution at the end of each iteration. */
           Density_nM1 = flowNodes->GetDensity(iPoint);
-          Density_n = flowNodes->GetDensity(iPoint);
+          Density_n = flowNodes->GetDensity_time_n(iPoint);
           Density_nP1 = flowNodes->GetDensity(iPoint);
         } else {
           Density_nM1 = flowNodes->GetSolution_time_n1(iPoint)[0];
@@ -700,7 +700,7 @@ void CScalarSolver<VariableType>::SetResidual_DualTime(CGeometry* geometry, CSol
 
       if (Conservative) {
         if (incompressible)
-          Density_n = flowNodes->GetDensity(iPoint);  // Temporary fix
+          Density_n = flowNodes->GetDensity_time_n(iPoint);  // Temporary fix
         else
           Density_n = flowNodes->GetSolution_time_n(iPoint, 0);
       }
@@ -756,7 +756,7 @@ void CScalarSolver<VariableType>::SetResidual_DualTime(CGeometry* geometry, CSol
 
           if (Conservative) {
             if (incompressible)
-              Density_n = flowNodes->GetDensity(iPoint);  // Temporary fix
+              Density_n = flowNodes->GetDensity_time_n(iPoint);  // Temporary fix
             else
               Density_n = flowNodes->GetSolution_time_n(iPoint, 0);
           }
@@ -802,7 +802,7 @@ void CScalarSolver<VariableType>::SetResidual_DualTime(CGeometry* geometry, CSol
           of the solution vector it's neither stored for previous time steps
           nor updated with the solution at the end of each iteration. */
           Density_nM1 = flowNodes->GetDensity(iPoint);
-          Density_n = flowNodes->GetDensity(iPoint);
+          Density_n = flowNodes->GetDensity_time_n(iPoint);
           Density_nP1 = flowNodes->GetDensity(iPoint);
         } else {
           Density_nM1 = flowNodes->GetSolution_time_n1(iPoint)[0];
