@@ -35,6 +35,7 @@
 #include "../../../Common/include/geometry/CGeometry.hpp"
 #include "../../../Common/include/toolboxes/geometry_toolbox.hpp"
 #include "../../include/solvers/CSolver.hpp"
+#include "../../include/solvers/CSpeciesFlameletSolver.hpp"
 #include "../../include/variables/CPrimitiveIndices.hpp"
 #include "../../include/fluid/CCoolProp.hpp"
 
@@ -1151,6 +1152,12 @@ void CFlowOutput::AddHistoryOutputFieldsScalarLinsol(const CConfig* config) {
     }
     case SPECIES_MODEL::NONE: break;
   }
+
+  if (config->GetKind_Species_Model() == SPECIES_MODEL::FLAMELET) {
+    /// DESCRIPTION: Globally integrated Heat_Release lookup value over the domain.
+    AddHistoryOutput("HEAT_RELEASE_GLOBAL", "HeatReleaseGlobal", ScreenOutputFormat::SCIENTIFIC,
+                     "FLAMELET_DIAGNOSTICS", "Domain integral of the Heat_Release lookup.");
+  }
 }
 // clang-format on
 
@@ -1229,15 +1236,21 @@ void CFlowOutput::LoadHistoryDataScalar(const CConfig* config, const CSolver* co
       /*--- auxiliary species transport ---*/
       for (unsigned short iReactant=0; iReactant<flamelet_config_options.n_user_scalars; iReactant++){
         const auto& species_name = flamelet_config_options.user_scalar_names[iReactant];
-        SetHistoryOutputValue("RMS_" + species_name, log10(solver[SPECIES_SOL]->GetRes_RMS(flamelet_config_options.n_control_vars + iReactant)));
-        SetHistoryOutputValue("MAX_" + species_name, log10(solver[SPECIES_SOL]->GetRes_Max(flamelet_config_options.n_control_vars + iReactant)));
-        if (multiZone) {
-          SetHistoryOutputValue("BGS_" + species_name, log10(solver[SPECIES_SOL]->GetRes_BGS(flamelet_config_options.n_control_vars + iReactant)));
-        }
+      SetHistoryOutputValue("RMS_" + species_name, log10(solver[SPECIES_SOL]->GetRes_RMS(flamelet_config_options.n_control_vars + iReactant)));
+      SetHistoryOutputValue("MAX_" + species_name, log10(solver[SPECIES_SOL]->GetRes_Max(flamelet_config_options.n_control_vars + iReactant)));
+      if (multiZone) {
+        SetHistoryOutputValue("BGS_" + species_name, log10(solver[SPECIES_SOL]->GetRes_BGS(flamelet_config_options.n_control_vars + iReactant)));
       }
+    }
 
-      SetHistoryOutputValue("LINSOL_ITER_FLAMELET", solver[SPECIES_SOL]->GetIterLinSolver());
-      SetHistoryOutputValue("LINSOL_RESIDUAL_FLAMELET", log10(solver[SPECIES_SOL]->GetResLinSolver()));
+    SetHistoryOutputValue("LINSOL_ITER_FLAMELET", solver[SPECIES_SOL]->GetIterLinSolver());
+    SetHistoryOutputValue("LINSOL_RESIDUAL_FLAMELET", log10(solver[SPECIES_SOL]->GetResLinSolver()));
+
+      if (const auto* flamelet_solver = dynamic_cast<const CSpeciesFlameletSolver*>(solver[SPECIES_SOL])) {
+        SetHistoryOutputValue("HEAT_RELEASE_GLOBAL", flamelet_solver->GetHeatReleaseGlobal());
+      } else {
+        SetHistoryOutputValue("HEAT_RELEASE_GLOBAL", 0.0);
+      }
     }
     break;
 

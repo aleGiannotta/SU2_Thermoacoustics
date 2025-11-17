@@ -2892,6 +2892,7 @@ void CFluidDriver::StartSolver(){
 
   if (rank == MASTER_NODE){
     cout << endl <<"------------------------------ Begin Solver -----------------------------" << endl;
+    cout << endl <<"----------- YOUR ARE RUNNING THE FTF IDENTIFICATION FEATURE -------------" << endl;
   }
 
   unsigned long Iter = 0;

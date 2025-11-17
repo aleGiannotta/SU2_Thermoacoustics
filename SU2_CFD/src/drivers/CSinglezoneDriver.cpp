@@ -53,9 +53,11 @@ void CSinglezoneDriver::StartSolver() {
 
   if (rank == MASTER_NODE)
     cout << endl <<"------------------------------ Begin Solver -----------------------------" << endl;
+    cout << endl <<"----------- YOUR ARE RUNNING THE FTF IDENTIFICATION FEATURE -------------" << endl;
 
   if (rank == MASTER_NODE){
     cout << endl <<"Simulation Run using the Single-zone Driver" << endl;
+    cout << endl <<"----------- YOUR ARE RUNNING THE FTF IDENTIFICATION FEATURE -------------" << endl;
     if (driver_config->GetTime_Domain())
       cout << "The simulation will run for "
            << driver_config->GetnTime_Iter() - config_container[ZONE_0]->GetRestart_Iter() << " time steps." << endl;

@@ -3827,6 +3827,7 @@ void CConfig::SetPostprocessing(SU2_COMPONENT val_software, unsigned short val_i
         case SURFACE_PRESSURE_DROP:
         case SURFACE_SPECIES_0:
         case SURFACE_SPECIES_VARIANCE:
+        case HEAT_RELEASE_GLOBAL:
         case CUSTOM_OBJFUNC:
           if (Kind_ObjFunc[iObj] != Obj_0) {
             SU2_MPI::Error("The following objectives can only be used for the first surface in a multi-objective \n"
@@ -3835,7 +3836,7 @@ void CConfig::SetPostprocessing(SU2_COMPONENT val_software, unsigned short val_i
                            "FIGURE_OF_MERIT, SURFACE_TOTAL_PRESSURE, SURFACE_STATIC_PRESSURE, SURFACE_MASSFLOW\n"
                            "SURFACE_UNIFORMITY, SURFACE_SECONDARY, SURFACE_MOM_DISTORTION, SURFACE_SECOND_OVER_UNIFORM\n"
                            "SURFACE_PRESSURE_DROP, SURFACE_STATIC_TEMPERATURE, SURFACE_SPECIES_0\n"
-                           "SURFACE_SPECIES_VARIANCE, CUSTOM_OBJFUNC.\n", CURRENT_FUNCTION);
+                           "SURFACE_SPECIES_VARIANCE, HEAT_RELEASE_GLOBAL, CUSTOM_OBJFUNC.\n", CURRENT_FUNCTION);
           }
           break;
         default:
@@ -6923,6 +6924,7 @@ void CConfig::SetOutput(SU2_COMPONENT val_software, unsigned short val_izone) {
         case SURFACE_STATIC_TEMPERATURE: cout << "Average static temperature objective function." << endl; break;
         case SURFACE_MASSFLOW:           cout << "Mass flow rate objective function." << endl; break;
         case SURFACE_MACH:               cout << "Mach number objective function." << endl; break;
+        case HEAT_RELEASE_GLOBAL:        cout << "Global heat-release objective function." << endl; break;
         case CUSTOM_OBJFUNC:             cout << "Custom objective function." << endl; break;
         case REFERENCE_GEOMETRY:         cout << "Target geometry objective function." << endl; break;
         case REFERENCE_NODE:             cout << "Target node displacement objective function." << endl; break;
@@ -8630,6 +8632,7 @@ string CConfig::GetObjFunc_Extension(string val_filename) const {
         case SURFACE_SPECIES_0:           AdjExt = "_avgspec0"; break;
         case SURFACE_SPECIES_VARIANCE:    AdjExt = "_specvar";  break;
         case SURFACE_MACH:                AdjExt = "_mach";     break;
+        case HEAT_RELEASE_GLOBAL:         AdjExt = "_hrr";       break;
         case CUSTOM_OBJFUNC:              AdjExt = "_custom";   break;
         case REFERENCE_GEOMETRY:          AdjExt = "_refgeom";  break;
         case REFERENCE_NODE:              AdjExt = "_refnode";  break;

@@ -56,6 +56,7 @@ CFlowIncOutput::CFlowIncOutput(CConfig *config, unsigned short nDim) : CFlowOutp
     requestedScreenFields.emplace_back("RMS_PRESSURE");
     requestedScreenFields.emplace_back("RMS_VELOCITY-X");
     requestedScreenFields.emplace_back("RMS_VELOCITY-Y");
+    if (flamelet) requestedScreenFields.emplace_back("HEAT_RELEASE_GLOBAL");
     nRequestedScreenFields = requestedScreenFields.size();
   }
 

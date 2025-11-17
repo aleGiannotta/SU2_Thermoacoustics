@@ -39,6 +39,16 @@ CSpeciesFlameletSolver::CSpeciesFlameletSolver(CGeometry* geometry, CConfig* con
 
   /*--- Retrieve options from config. ---*/
   flamelet_config_options = config->GetFlameletParsedOptions();
+  /*--- Locate the Heat_Release lookup entry (if available). ---*/
+  for (auto i_lookup = 0u; i_lookup < flamelet_config_options.n_lookups;++i_lookup) {
+    if (flamelet_config_options.lookup_names[i_lookup] == "Heat_Release") {
+      heat_release_lookup_idx = static_cast<int>(i_lookup);
+      break;
+    }
+  }
+  if ((rank == MASTER_NODE) && (heat_release_lookup_idx < 0)) {
+    cout << "Heat_Release lookup entry not requested – global heat-release integral disabled." << endl;
+  }
 
   /*--- Dimension of the problem. ---*/
   nVar = flamelet_config_options.n_scalars;
@@ -87,6 +97,9 @@ void CSpeciesFlameletSolver::Preprocessing(CGeometry* geometry, CSolver** solver
 
   SU2_OMP_SAFE_GLOBAL_ACCESS(config->SetGlobalParam(config->GetKind_Solver(), RunTime_EqSystem);)
 
+  const bool integrate_heat_release = (heat_release_lookup_idx >= 0);
+  heat_release_global = 0.0;
+  su2double Heat_Release_local = 0.0;
   SU2_OMP_FOR_STAT(omp_chunk_size)
   for (auto i_point = 0u; i_point < nPoint; i_point++) {
     CFluidModel* fluid_model_local = solver_container[FLOW_SOL]->GetFluidModel();
@@ -112,6 +125,14 @@ void CSpeciesFlameletSolver::Preprocessing(CGeometry* geometry, CSolver** solver
     /*--- Obtain passive look-up scalars. ---*/
     SetScalarLookUps(fluid_model_local, i_point, scalars_vector);
 
+    if (integrate_heat_release && geometry->nodes->GetDomain(i_point)) {
+      const su2double lookup_heat_release = nodes->GetScalarLookups(i_point)[heat_release_lookup_idx];
+      const su2double vol = geometry->nodes->GetVolume(i_point);
+      const su2double heat_release_contribution = lookup_heat_release * vol;
+      SU2_OMP_ATOMIC
+      Heat_Release_local += heat_release_contribution;
+    }
+
     /*--- Set mass diffusivity based on thermodynamic state. ---*/
     auto T = flowNodes->GetTemperature(i_point);
     fluid_model_local->SetTDState_T(T, scalars);
@@ -127,6 +148,20 @@ void CSpeciesFlameletSolver::Preprocessing(CGeometry* geometry, CSolver** solver
     if (!Output) LinSysRes.SetBlock_Zero(i_point);
   }
   END_SU2_OMP_FOR
+
+  if (integrate_heat_release) {
+    su2double Heat_Release_global = 0.0;
+    SU2_MPI::Reduce(&Heat_Release_local, &Heat_Release_global, 1, MPI_DOUBLE, MPI_SUM, MASTER_NODE,
+                    SU2_MPI::GetComm());
+
+    heat_release_global = Heat_Release_global;
+    config->SetHeatReleaseGlobal(heat_release_global);
+
+  } else {
+    heat_release_global = 0.0;
+    config->SetHeatReleaseGlobal(0.0);
+  }
+
   /* --- Sum up some global counters over processes. --- */
   SU2_MPI::Reduce(&n_not_in_domain_local, &n_not_in_domain_global, 1, MPI_UNSIGNED_LONG, MPI_SUM, MASTER_NODE,
                   SU2_MPI::GetComm());
@@ -550,12 +585,10 @@ unsigned long CSpeciesFlameletSolver::SetScalarLookUps(CFluidModel* fluid_model_
   if (flamelet_config_options.n_lookups > 0) {
     vector<su2double> lookup_scalar(flamelet_config_options.n_lookups);
     misses = fluid_model_local->EvaluateDataSet(scalars, FLAMELET_LOOKUP_OPS::LOOKUP, lookup_scalar);
-
     for (auto i_lookup = 0u; i_lookup < flamelet_config_options.n_lookups; i_lookup++) {
       nodes->SetLookupScalar(iPoint, lookup_scalar[i_lookup], i_lookup);
     }
   }
-
   return misses;
 }
 

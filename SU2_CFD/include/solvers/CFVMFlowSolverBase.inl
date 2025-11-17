@@ -2973,6 +2973,9 @@ su2double CFVMFlowSolverBase<V,R>::EvaluateCommonObjFunc(const CConfig& config) 
     case CUSTOM_OBJFUNC:
       objFun += weight * Total_Custom_ObjFunc;
       break;
+    case HEAT_RELEASE_GLOBAL:
+      objFun += weight * config.GetHeatReleaseGlobal();
+      break;
     default:
       break;
   }

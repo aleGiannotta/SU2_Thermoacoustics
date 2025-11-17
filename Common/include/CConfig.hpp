@@ -417,6 +417,7 @@ private:
   long Unst_AdjointIter;            /*!< \brief Iteration number to begin the reverse time integration in the direct solver for the unsteady adjoint. */
   long Iter_Avg_Objective;          /*!< \brief Iteration the number of time steps to be averaged, counting from the back */
   su2double PhysicalTime;           /*!< \brief Physical time at the current iteration in the solver for unsteady problems. */
+  su2double HeatRelease_Global = 0.0; /*!< \brief Globally integrated Heat_Release lookup value. */
 
   unsigned short nLevels_TimeAccurateLTS;   /*!< \brief Number of time levels for time accurate local time stepping. */
   unsigned short nTimeDOFsADER_DG;          /*!< \brief Number of time DOFs used in the predictor step of ADER-DG. */
@@ -8097,6 +8098,12 @@ public:
   void SetSurface_Species_Variance(unsigned short val_marker, su2double val_surface_species_variance) { Surface_Species_Variance[val_marker] = val_surface_species_variance; }
 
   /*!
+   * \brief Set the globally integrated Heat_Release value.
+   * \param[in] val_heat_release - Value of the Heat_Release integral.
+   */
+  void SetHeatReleaseGlobal(su2double val_heat_release) { HeatRelease_Global = val_heat_release; }
+
+  /*!
    * \brief Get the back pressure (static) at an outlet boundary.
    * \param[in] val_index - Index corresponding to the outlet boundary.
    * \return The outlet pressure.
@@ -8375,6 +8382,12 @@ public:
    * \return The species variance.
    */
   su2double GetSurface_Species_Variance(unsigned short val_marker) const { return Surface_Species_Variance[val_marker]; }
+
+  /*!
+   * \brief Get the globally integrated Heat_Release value.
+   * \return The Heat_Release integral over the domain.
+   */
+  su2double GetHeatReleaseGlobal() const { return HeatRelease_Global; }
 
   /*!
    * \brief Get the back pressure (static) at an outlet boundary.

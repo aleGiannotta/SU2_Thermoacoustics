@@ -51,6 +51,8 @@ CNEMOCompOutput::CNEMOCompOutput(const CConfig *config, unsigned short nDim) : C
     requestedScreenFields.emplace_back("RMS_MOMENTUM-Y");
     requestedScreenFields.emplace_back("RMS_ENERGY");
     requestedScreenFields.emplace_back("RMS_ENERGY_VE");
+    if (config->GetKind_Species_Model() == SPECIES_MODEL::FLAMELET)
+      requestedScreenFields.emplace_back("HEAT_RELEASE_GLOBAL");
     nRequestedScreenFields = requestedScreenFields.size();
   }
   if (nRequestedVolumeFields == 0){
