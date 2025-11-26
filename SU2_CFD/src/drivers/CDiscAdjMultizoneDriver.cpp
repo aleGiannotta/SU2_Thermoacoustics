@@ -30,6 +30,7 @@
 #include "../../include/output/COutputFactory.hpp"
 #include "../../include/output/COutput.hpp"
 #include "../../include/iteration/CIterationFactory.hpp"
+#include <algorithm>
 
 CDiscAdjMultizoneDriver::CDiscAdjMultizoneDriver(char* confFile,
                                                  unsigned short val_nZone,
@@ -876,16 +877,31 @@ void CDiscAdjMultizoneDriver::SetAdjObjFunction() {
   su2double seeding = 1.0;
 
   if (config_container[ZONE_0]->GetTime_Domain()) {
-    const auto IterAvg_Obj = config_container[ZONE_0]->GetIter_Avg_Objective();
-    if (TimeIter < IterAvg_Obj) {
-      /*--- Default behavior when no window is chosen is to use Square-Windowing, i.e. the numerator equals 1.0 ---*/
-      auto windowEvaluator = CWindowingTools();
-      const su2double weight =
-          windowEvaluator.GetWndWeight(config_container[ZONE_0]->GetKindWindow(), TimeIter, IterAvg_Obj - 1);
-      seeding = weight / IterAvg_Obj;
-    }
-    else {
-      seeding = 0.0;
+    seeding = 0.0;
+    const auto windowStart = config_container[ZONE_0]->GetStartWindowIteration();
+    const long totalDirectItersLong = config_container[ZONE_0]->GetUnst_AdjointIter();
+    if (totalDirectItersLong > 0) {
+      const auto totalDirectIters = static_cast<unsigned long>(totalDirectItersLong);
+      if (totalDirectIters > windowStart) {
+        const unsigned long availableSamples = totalDirectIters - windowStart;
+        unsigned long windowLength = config_container[ZONE_0]->GetIter_Avg_Objective();
+        if (windowLength == 0 || windowLength > availableSamples) {
+          windowLength = availableSamples;
+        }
+        if (windowLength > 0) {
+          const unsigned long effectiveStart = std::max(windowStart, totalDirectIters - windowLength);
+          const unsigned long effectiveEnd = effectiveStart + windowLength;
+          long directIter = totalDirectItersLong - static_cast<long>(TimeIter) - 1;
+          if (directIter >= static_cast<long>(effectiveStart) &&
+              directIter < static_cast<long>(effectiveEnd)) {
+            const auto mappedIter = static_cast<unsigned long>(directIter - static_cast<long>(effectiveStart));
+            auto windowEvaluator = CWindowingTools();
+            const su2double weight =
+                windowEvaluator.GetWndWeight(config_container[ZONE_0]->GetKindWindow(), mappedIter, windowLength - 1);
+            seeding = weight / static_cast<su2double>(windowLength);
+          }
+        }
+      }
     }
   }
   if (rank == MASTER_NODE) {

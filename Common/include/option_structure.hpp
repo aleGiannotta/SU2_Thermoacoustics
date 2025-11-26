@@ -1469,6 +1469,18 @@ static const MapType<std::string, WINDOW_FUNCTION> Window_Map = {
 };
 
 /*!
+ * \brief Temporal operators available for scalar objective functions.
+ */
+enum class OBJFUNC_TEMPORAL_MODE {
+  TIME_AVERAGE,     /*!< \brief Default windowed time average. */
+  DFT_AMPLITUDE     /*!< \brief Single-frequency DFT magnitude. */
+};
+static const MapType<std::string, OBJFUNC_TEMPORAL_MODE> ObjFuncTemporalMode_Map = {
+  MakePair("AVERAGE", OBJFUNC_TEMPORAL_MODE::TIME_AVERAGE)
+  MakePair("DFT_AMPLITUDE", OBJFUNC_TEMPORAL_MODE::DFT_AMPLITUDE)
+};
+
+/*!
  * \brief Types of hybrid RANS/LES models
  */
 enum ENUM_HYBRIDRANSLES {

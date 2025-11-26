@@ -27,7 +27,9 @@
  */
 
 #pragma once
+#include <memory>
 #include "CDriver.hpp"
+#include "CObjectiveFTFManager.hpp"
 
 /*!
  * \class CSinglezoneDriver
@@ -40,12 +42,18 @@ class CSinglezoneDriver : public CDriver {
 protected:
 
   unsigned long TimeIter;
+  std::unique_ptr<CObjectiveFTFManager> ObjectiveFTFManager;
 
   /*!
      * \brief  Returns whether all specified windowed-time-averaged ouputs have been converged
      * \return Boolean indicating whether the problem is converged.
      */
   virtual bool GetTimeConvergence() const;
+
+  void InitializeFTFManager();
+  void SampleFTFObjective(unsigned long Iter);
+  void MaybeFinalizeFTF(unsigned long Iter);
+  CObjectiveFTFManager* GetFTFManager() const { return ObjectiveFTFManager.get(); }
 
 public:
 

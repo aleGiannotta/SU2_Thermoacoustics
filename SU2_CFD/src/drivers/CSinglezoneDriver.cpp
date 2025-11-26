@@ -39,6 +39,8 @@ CSinglezoneDriver::CSinglezoneDriver(char* confFile,
 
   /*--- Initialize the counter for TimeIter ---*/
   TimeIter = 0;
+
+  InitializeFTFManager();
 }
 
 CSinglezoneDriver::~CSinglezoneDriver() = default;
@@ -102,6 +104,7 @@ void CSinglezoneDriver::StartSolver() {
 
   }
 
+  if (ObjectiveFTFManager) MaybeFinalizeFTF(TimeIter);
 }
 
 void CSinglezoneDriver::Preprocess(unsigned long TimeIter) {
@@ -262,6 +265,8 @@ bool CSinglezoneDriver::Monitor(unsigned long TimeIter){
 
   TimeDomain = config_container[ZONE_0]->GetTime_Domain();
 
+  SampleFTFObjective(TimeIter);
+
 
   /*--- Check whether the inner solver has converged --- */
 
@@ -313,4 +318,47 @@ bool CSinglezoneDriver::Monitor(unsigned long TimeIter){
 
 bool CSinglezoneDriver::GetTimeConvergence() const{
   return output_container[ZONE_0]->GetCauchyCorrectedTimeConvergence(config_container[ZONE_0]);
+}
+
+void CSinglezoneDriver::InitializeFTFManager() {
+  auto* zone_config = config_container[ZONE_0];
+  if (!zone_config) return;
+  if (!zone_config->GetTime_Domain()) return;
+  if (zone_config->GetObjectiveTemporalMode() != OBJFUNC_TEMPORAL_MODE::DFT_AMPLITUDE) return;
+
+  ObjectiveFTFManager = std::make_unique<CObjectiveFTFManager>(zone_config);
+  if (zone_config->GetDiscrete_Adjoint()) {
+    ObjectiveFTFManager->LoadAlphaFromFile();
+  }
+}
+
+void CSinglezoneDriver::SampleFTFObjective(unsigned long Iter) {
+  if (!ObjectiveFTFManager) return;
+  if (!config_container[ZONE_0]->GetTime_Domain()) return;
+  if (config_container[ZONE_0]->GetDiscrete_Adjoint()) return;
+  if (rank != MASTER_NODE) return;
+  if (!ObjectiveFTFManager->IsInWindow(Iter)) return;
+
+  su2double totalObjective = 0.0;
+  auto* solvers = solver_container[ZONE_0][INST_0][MESH_0];
+  for (unsigned short iSol = 0; iSol < MAX_SOLS; ++iSol) {
+    if (solvers[iSol] == nullptr) continue;
+    totalObjective += solvers[iSol]->GetTotal_ComboObj();
+  }
+
+  ObjectiveFTFManager->AddSample(Iter, totalObjective);
+  MaybeFinalizeFTF(Iter);
+}
+
+void CSinglezoneDriver::MaybeFinalizeFTF(unsigned long Iter) {
+  if (!ObjectiveFTFManager) return;
+  if (ObjectiveFTFManager->IsFinalized()) return;
+  if (!ObjectiveFTFManager->HasCompleteWindow()) return;
+  // Allow finalization once the window is completely populated,
+  // even if samples arrive in reverse order (discrete adjoint replay).
+  if (Iter < ObjectiveFTFManager->GetWindowStart()) return;
+  ObjectiveFTFManager->FinalizeDFT();
+  if (rank == MASTER_NODE) {
+    ObjectiveFTFManager->WriteAmplitudeFile();
+  }
 }

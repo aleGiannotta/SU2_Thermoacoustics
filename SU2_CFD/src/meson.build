@@ -164,6 +164,7 @@ su2_cfd_src += files(['drivers/CDriver.cpp',
                       'drivers/CSinglezoneDriver.cpp',
                       'drivers/CDiscAdjMultizoneDriver.cpp',
                       'drivers/CDiscAdjSinglezoneDriver.cpp',
+                      'drivers/CObjectiveFTFManager.cpp',
                       'drivers/CDummyDriver.cpp',
                       'drivers/CDriverBase.cpp'])
 
@@ -241,4 +242,3 @@ if get_option('enable-directdiff')
                           cpp_args: ['-fPIC'] + [default_warning_flags, su2_cpp_args, codi_for_args] + profiling_args,
                           link_args: profiling_args)
 endif
-

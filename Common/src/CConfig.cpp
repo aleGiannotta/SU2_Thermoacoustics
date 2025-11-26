@@ -1587,6 +1587,12 @@ void CConfig::SetConfig_Options() {
   addEnumOption("INLET_TYPE", Kind_Inlet, Inlet_Map, INLET_TYPE::TOTAL_CONDITIONS);
   /*!\brief INLET_USE_NORMAL \n DESCRIPTION: Use the local boundary normal for the flow direction with pressure inlets. \ingroup Config*/
   addBoolOption("INLET_USE_NORMAL", InletUseNormal, false);
+  /*!\brief INLET_SINE_AMPLITUDE \n DESCRIPTION: Amplitude of sinusoidal inlet forcing (0 disables forcing). \ingroup Config*/
+  addDoubleOption("INLET_SINE_AMPLITUDE", Inlet_Sine_Amplitude, 0.0);
+  /*!\brief INLET_SINE_FREQUENCY \n DESCRIPTION: Frequency (Hz) of sinusoidal inlet forcing. \ingroup Config*/
+  addDoubleOption("INLET_SINE_FREQUENCY", Inlet_Sine_Frequency, 0.0);
+  /*!\brief INLET_SINE_PHASE \n DESCRIPTION: Phase offset (radians) of sinusoidal inlet forcing. \ingroup Config*/
+  addDoubleOption("INLET_SINE_PHASE", Inlet_Sine_Phase, 0.0);
   /*!\brief INC_INLET_TYPE \n DESCRIPTION: List of inlet types for incompressible flows. List length must match number of inlet markers. Options: VELOCITY_INLET, PRESSURE_INLET, INPUT_FILE. \ingroup Config*/
   addEnumListOption("INC_INLET_TYPE", nInc_Inlet, Kind_Inc_Inlet, Inlet_Map);
   addBoolOption("SPECIFIED_INLET_PROFILE", Inlet_From_File, false);
@@ -2218,6 +2224,9 @@ void CConfig::SetConfig_Options() {
   /*!\brief VALUE_OBJFUNC_FILENAME
    *  \n DESCRIPTION: Output objective function  \ingroup Config*/
   addStringOption("VALUE_OBJFUNC_FILENAME", ObjFunc_Value_FileName, string("of_func"));
+  /*!\brief OBJECTIVE_DFT_OUTPUT
+   *  \n DESCRIPTION: Output file for DFT amplitude logging  \ingroup Config*/
+  addStringOption("OBJECTIVE_DFT_OUTPUT", ObjectiveDFT_FileName, string("ftf_amplitude.dat"));
   /*!\brief SURFACE_FLOW_FILENAME
    *  \n DESCRIPTION: Output file surface flow coefficient (w/o extension)  \ingroup Config*/
   addStringOption("SURFACE_FILENAME", SurfCoeff_FileName, string("surface"));
@@ -2904,6 +2913,13 @@ void CConfig::SetConfig_Options() {
 
   /* DESCRIPTION: Window (weight) function for the cost-functional in the reverse sweep */
   addEnumOption("WINDOW_FUNCTION", Kind_WindowFct, Window_Map, WINDOW_FUNCTION::SQUARE);
+
+  /* DESCRIPTION: Temporal operator applied to the unsteady objective */
+  addEnumOption("OBJECTIVE_TEMPORAL_MODE", ObjectiveTemporalMode, ObjFuncTemporalMode_Map,
+                OBJFUNC_TEMPORAL_MODE::TIME_AVERAGE);
+
+  /* DESCRIPTION: Harmonic index for the DFT-based objective mode */
+  addUnsignedLongOption("OBJECTIVE_DFT_HARMONIC", ObjectiveDFTHarmonic, 1);
 
   /* DESCRIPTION: DES Constant */
   addDoubleOption("DES_CONST", Const_DES, 0.65);
@@ -7439,6 +7455,10 @@ void CConfig::SetOutput(SU2_COMPONENT val_software, unsigned short val_izone) {
         SU2_MPI::Error(to_string(Wnd_Cauchy_Elems) +string(" Cauchy elements are no viable input. Please check your configuration file."), CURRENT_FUNCTION);
       }
     }
+  }
+
+  if (ObjectiveTemporalMode == OBJFUNC_TEMPORAL_MODE::DFT_AMPLITUDE) {
+    ObjFunc_Value_FileName = ObjectiveDFT_FileName;
   }
 
   cout << endl <<"-------------------- Output Information ( Zone "  << iZone << " ) ----------------------" << endl;
