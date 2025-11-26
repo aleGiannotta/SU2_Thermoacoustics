@@ -1,0 +1,386 @@
+
+-------------------------------------------------------------------------
+|    ___ _   _ ___                                                      |
+|   / __| | | |_  )   Release 8.3.0 "Harrier"                           |
+|   \__ \ |_| |/ /                                                      |
+|   |___/\___//___|   Suite (Mesh Deformation Code)                     |
+|                                                                       |
+-------------------------------------------------------------------------
+| SU2 Project Website: https://su2code.github.io                        |
+|                                                                       |
+| The SU2 Project is maintained by the SU2 Foundation                   |
+| (http://su2foundation.org)                                            |
+-------------------------------------------------------------------------
+| Copyright 2012-2025, SU2 Contributors                                 |
+|                                                                       |
+| SU2 is free software; you can redistribute it and/or                  |
+| modify it under the terms of the GNU Lesser General Public            |
+| License as published by the Free Software Foundation; either          |
+| version 2.1 of the License, or (at your option) any later version.    |
+|                                                                       |
+| SU2 is distributed in the hope that it will be useful,                |
+| but WITHOUT ANY WARRANTY; without even the implied warranty of        |
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU      |
+| Lesser General Public License for more details.                       |
+|                                                                       |
+| You should have received a copy of the GNU Lesser General Public      |
+| License along with SU2. If not, see <http://www.gnu.org/licenses/>.   |
+-------------------------------------------------------------------------
+
+----------------- Physical Case Definition ( Zone 0 ) -------------------
+Input mesh file name: unsteady_naca0012_FFD.su2
+
+---------------- Grid deformation parameters ( Zone 0 )  ----------------
+Grid deformation using linear elasticity method.
+Design variables definition (markers <-> value <-> param):
+FFD 2D (control point) <-> AIRFOIL <-> -0.000101874 <-> ( AIRFOIL_BOX, 0, 0, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00055382 <-> ( AIRFOIL_BOX, 1, 0, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00145411 <-> ( AIRFOIL_BOX, 2, 0, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00226031 <-> ( AIRFOIL_BOX, 3, 0, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00197565 <-> ( AIRFOIL_BOX, 4, 0, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000436911 <-> ( AIRFOIL_BOX, 5, 0, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00108359 <-> ( AIRFOIL_BOX, 6, 0, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00137483 <-> ( AIRFOIL_BOX, 7, 0, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000728547 <-> ( AIRFOIL_BOX, 8, 0, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000145147 <-> ( AIRFOIL_BOX, 9, 0, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -1.91057e-05 <-> ( AIRFOIL_BOX, 10, 0, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -8.03636e-05 <-> ( AIRFOIL_BOX, 0, 1, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000406485 <-> ( AIRFOIL_BOX, 1, 1, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000992102 <-> ( AIRFOIL_BOX, 2, 1, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.0014845 <-> ( AIRFOIL_BOX, 3, 1, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.0013171 <-> ( AIRFOIL_BOX, 4, 1, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000426577 <-> ( AIRFOIL_BOX, 5, 1, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000443861 <-> ( AIRFOIL_BOX, 6, 1, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000613194 <-> ( AIRFOIL_BOX, 7, 1, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00026111 <-> ( AIRFOIL_BOX, 8, 1, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -3.95137e-05 <-> ( AIRFOIL_BOX, 9, 1, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -7.61771e-05 <-> ( AIRFOIL_BOX, 10, 1, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -3.49389e-05 <-> ( AIRFOIL_BOX, 0, 2, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000152661 <-> ( AIRFOIL_BOX, 1, 2, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00032937 <-> ( AIRFOIL_BOX, 2, 2, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000459067 <-> ( AIRFOIL_BOX, 3, 2, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000405502 <-> ( AIRFOIL_BOX, 4, 2, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000168611 <-> ( AIRFOIL_BOX, 5, 2, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 5.31736e-05 <-> ( AIRFOIL_BOX, 6, 2, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 8.7998e-05 <-> ( AIRFOIL_BOX, 7, 2, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -1.25153e-05 <-> ( AIRFOIL_BOX, 8, 2, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -9.18957e-05 <-> ( AIRFOIL_BOX, 9, 2, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -7.21688e-05 <-> ( AIRFOIL_BOX, 10, 2, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -2.82145e-05 <-> ( AIRFOIL_BOX, 0, 3, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -6.23076e-05 <-> ( AIRFOIL_BOX, 1, 3, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -8.74375e-05 <-> ( AIRFOIL_BOX, 2, 3, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -9.72039e-05 <-> ( AIRFOIL_BOX, 3, 3, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -7.99062e-05 <-> ( AIRFOIL_BOX, 4, 3, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -3.96043e-05 <-> ( AIRFOIL_BOX, 5, 3, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -6.9172e-06 <-> ( AIRFOIL_BOX, 6, 3, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -5.169e-06 <-> ( AIRFOIL_BOX, 7, 3, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -2.11958e-05 <-> ( AIRFOIL_BOX, 8, 3, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -2.74132e-05 <-> ( AIRFOIL_BOX, 9, 3, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -1.56013e-05 <-> ( AIRFOIL_BOX, 10, 3, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -4.16127e-05 <-> ( AIRFOIL_BOX, 0, 4, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -6.18295e-05 <-> ( AIRFOIL_BOX, 1, 4, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -5.15632e-05 <-> ( AIRFOIL_BOX, 2, 4, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -3.47883e-05 <-> ( AIRFOIL_BOX, 3, 4, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -2.14566e-05 <-> ( AIRFOIL_BOX, 4, 4, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -1.28587e-05 <-> ( AIRFOIL_BOX, 5, 4, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -1.01245e-05 <-> ( AIRFOIL_BOX, 6, 4, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -8.92881e-06 <-> ( AIRFOIL_BOX, 7, 4, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 4.70787e-06 <-> ( AIRFOIL_BOX, 8, 4, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 3.31662e-05 <-> ( AIRFOIL_BOX, 9, 4, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 3.73903e-05 <-> ( AIRFOIL_BOX, 10, 4, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -4.85642e-05 <-> ( AIRFOIL_BOX, 0, 5, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -7.73449e-05 <-> ( AIRFOIL_BOX, 1, 5, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -7.11556e-05 <-> ( AIRFOIL_BOX, 2, 5, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -5.28691e-05 <-> ( AIRFOIL_BOX, 3, 5, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -3.58617e-05 <-> ( AIRFOIL_BOX, 4, 5, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -2.63833e-05 <-> ( AIRFOIL_BOX, 5, 5, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -2.69095e-05 <-> ( AIRFOIL_BOX, 6, 5, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -2.82537e-05 <-> ( AIRFOIL_BOX, 7, 5, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -7.68156e-06 <-> ( AIRFOIL_BOX, 8, 5, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 3.78902e-05 <-> ( AIRFOIL_BOX, 9, 5, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 4.9624e-05 <-> ( AIRFOIL_BOX, 10, 5, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -4.38702e-05 <-> ( AIRFOIL_BOX, 0, 6, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -8.94736e-05 <-> ( AIRFOIL_BOX, 1, 6, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000113662 <-> ( AIRFOIL_BOX, 2, 6, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000115368 <-> ( AIRFOIL_BOX, 3, 6, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -9.85966e-05 <-> ( AIRFOIL_BOX, 4, 6, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -7.84021e-05 <-> ( AIRFOIL_BOX, 5, 6, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -7.14013e-05 <-> ( AIRFOIL_BOX, 6, 6, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -7.31177e-05 <-> ( AIRFOIL_BOX, 7, 6, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -5.39425e-05 <-> ( AIRFOIL_BOX, 8, 6, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -2.29983e-06 <-> ( AIRFOIL_BOX, 9, 6, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 2.74449e-05 <-> ( AIRFOIL_BOX, 10, 6, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -3.53161e-05 <-> ( AIRFOIL_BOX, 0, 7, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000103353 <-> ( AIRFOIL_BOX, 1, 7, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00018365 <-> ( AIRFOIL_BOX, 2, 7, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000237396 <-> ( AIRFOIL_BOX, 3, 7, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000233967 <-> ( AIRFOIL_BOX, 4, 7, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000189135 <-> ( AIRFOIL_BOX, 5, 7, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000147958 <-> ( AIRFOIL_BOX, 6, 7, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000127744 <-> ( AIRFOIL_BOX, 7, 7, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000100101 <-> ( AIRFOIL_BOX, 8, 7, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -4.45035e-05 <-> ( AIRFOIL_BOX, 9, 7, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 4.98281e-07 <-> ( AIRFOIL_BOX, 10, 7, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -2.77195e-05 <-> ( AIRFOIL_BOX, 0, 8, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000111905 <-> ( AIRFOIL_BOX, 1, 8, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000240263 <-> ( AIRFOIL_BOX, 2, 8, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000330381 <-> ( AIRFOIL_BOX, 3, 8, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000306721 <-> ( AIRFOIL_BOX, 4, 8, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000203588 <-> ( AIRFOIL_BOX, 5, 8, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000122763 <-> ( AIRFOIL_BOX, 6, 8, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000101343 <-> ( AIRFOIL_BOX, 7, 8, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -9.02889e-05 <-> ( AIRFOIL_BOX, 8, 8, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -5.13608e-05 <-> ( AIRFOIL_BOX, 9, 8, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -1.07468e-05 <-> ( AIRFOIL_BOX, 10, 8, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -1.53602e-05 <-> ( AIRFOIL_BOX, 0, 9, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -5.64468e-05 <-> ( AIRFOIL_BOX, 1, 9, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -5.2739e-05 <-> ( AIRFOIL_BOX, 2, 9, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000135757 <-> ( AIRFOIL_BOX, 3, 9, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000494705 <-> ( AIRFOIL_BOX, 4, 9, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000745141 <-> ( AIRFOIL_BOX, 5, 9, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000655813 <-> ( AIRFOIL_BOX, 6, 9, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000344228 <-> ( AIRFOIL_BOX, 7, 9, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 8.90436e-05 <-> ( AIRFOIL_BOX, 8, 9, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -2.45506e-06 <-> ( AIRFOIL_BOX, 9, 9, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> -5.4269e-06 <-> ( AIRFOIL_BOX, 10, 9, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 5.71505e-06 <-> ( AIRFOIL_BOX, 0, 10, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 8.95784e-05 <-> ( AIRFOIL_BOX, 1, 10, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000471984 <-> ( AIRFOIL_BOX, 2, 10, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00133433 <-> ( AIRFOIL_BOX, 3, 10, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00235579 <-> ( AIRFOIL_BOX, 4, 10, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00276442 <-> ( AIRFOIL_BOX, 5, 10, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00219881 <-> ( AIRFOIL_BOX, 6, 10, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.0011705 <-> ( AIRFOIL_BOX, 7, 10, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000395338 <-> ( AIRFOIL_BOX, 8, 10, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 7.39074e-05 <-> ( AIRFOIL_BOX, 9, 10, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 5.07768e-06 <-> ( AIRFOIL_BOX, 10, 10, 1, 0 )
+FFD 2D (control point) <-> AIRFOIL <-> 2.58736e-05 <-> ( AIRFOIL_BOX, 0, 0, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000555869 <-> ( AIRFOIL_BOX, 1, 0, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00164511 <-> ( AIRFOIL_BOX, 2, 0, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00297099 <-> ( AIRFOIL_BOX, 3, 0, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00420127 <-> ( AIRFOIL_BOX, 4, 0, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00471964 <-> ( AIRFOIL_BOX, 5, 0, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00402366 <-> ( AIRFOIL_BOX, 6, 0, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00241491 <-> ( AIRFOIL_BOX, 7, 0, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000818084 <-> ( AIRFOIL_BOX, 8, 0, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000171506 <-> ( AIRFOIL_BOX, 9, 0, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000413532 <-> ( AIRFOIL_BOX, 10, 0, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000704356 <-> ( AIRFOIL_BOX, 0, 1, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000159074 <-> ( AIRFOIL_BOX, 1, 1, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00100112 <-> ( AIRFOIL_BOX, 2, 1, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00195597 <-> ( AIRFOIL_BOX, 3, 1, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.0025815 <-> ( AIRFOIL_BOX, 4, 1, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00272896 <-> ( AIRFOIL_BOX, 5, 1, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00220253 <-> ( AIRFOIL_BOX, 6, 1, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.0011297 <-> ( AIRFOIL_BOX, 7, 1, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.0002023 <-> ( AIRFOIL_BOX, 8, 1, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00157759 <-> ( AIRFOIL_BOX, 9, 1, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00182806 <-> ( AIRFOIL_BOX, 10, 1, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00173577 <-> ( AIRFOIL_BOX, 0, 2, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00145603 <-> ( AIRFOIL_BOX, 1, 2, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000240282 <-> ( AIRFOIL_BOX, 2, 2, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000479215 <-> ( AIRFOIL_BOX, 3, 2, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000718213 <-> ( AIRFOIL_BOX, 4, 2, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000712584 <-> ( AIRFOIL_BOX, 5, 2, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00049487 <-> ( AIRFOIL_BOX, 6, 2, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 5.25301e-05 <-> ( AIRFOIL_BOX, 7, 2, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00132753 <-> ( AIRFOIL_BOX, 8, 2, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00341124 <-> ( AIRFOIL_BOX, 9, 2, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00371383 <-> ( AIRFOIL_BOX, 10, 2, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00237214 <-> ( AIRFOIL_BOX, 0, 3, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00230213 <-> ( AIRFOIL_BOX, 1, 3, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000972883 <-> ( AIRFOIL_BOX, 2, 3, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000176893 <-> ( AIRFOIL_BOX, 3, 3, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -6.77258e-05 <-> ( AIRFOIL_BOX, 4, 3, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -9.94179e-05 <-> ( AIRFOIL_BOX, 5, 3, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -1.16517e-05 <-> ( AIRFOIL_BOX, 6, 3, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000425264 <-> ( AIRFOIL_BOX, 7, 3, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00188709 <-> ( AIRFOIL_BOX, 8, 3, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00449758 <-> ( AIRFOIL_BOX, 9, 3, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00481364 <-> ( AIRFOIL_BOX, 10, 3, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00227414 <-> ( AIRFOIL_BOX, 0, 4, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00238904 <-> ( AIRFOIL_BOX, 1, 4, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00121934 <-> ( AIRFOIL_BOX, 2, 4, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000425998 <-> ( AIRFOIL_BOX, 3, 4, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000118437 <-> ( AIRFOIL_BOX, 4, 4, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 1.35516e-05 <-> ( AIRFOIL_BOX, 5, 4, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 1.93371e-05 <-> ( AIRFOIL_BOX, 6, 4, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000372959 <-> ( AIRFOIL_BOX, 7, 4, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00174687 <-> ( AIRFOIL_BOX, 8, 4, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00420425 <-> ( AIRFOIL_BOX, 9, 4, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00445 <-> ( AIRFOIL_BOX, 10, 4, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00167914 <-> ( AIRFOIL_BOX, 0, 5, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00198304 <-> ( AIRFOIL_BOX, 1, 5, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00126696 <-> ( AIRFOIL_BOX, 2, 5, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000653401 <-> ( AIRFOIL_BOX, 3, 5, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000303783 <-> ( AIRFOIL_BOX, 4, 5, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 7.30303e-05 <-> ( AIRFOIL_BOX, 5, 5, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -8.28028e-05 <-> ( AIRFOIL_BOX, 6, 5, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 4.59463e-05 <-> ( AIRFOIL_BOX, 7, 5, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00100677 <-> ( AIRFOIL_BOX, 8, 5, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00281766 <-> ( AIRFOIL_BOX, 9, 5, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00303509 <-> ( AIRFOIL_BOX, 10, 5, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00102067 <-> ( AIRFOIL_BOX, 0, 6, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00150768 <-> ( AIRFOIL_BOX, 1, 6, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00140176 <-> ( AIRFOIL_BOX, 2, 6, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00113733 <-> ( AIRFOIL_BOX, 3, 6, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000780212 <-> ( AIRFOIL_BOX, 4, 6, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000318609 <-> ( AIRFOIL_BOX, 5, 6, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000159925 <-> ( AIRFOIL_BOX, 6, 6, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000400961 <-> ( AIRFOIL_BOX, 7, 6, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 3.73348e-05 <-> ( AIRFOIL_BOX, 8, 6, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00116718 <-> ( AIRFOIL_BOX, 9, 6, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00148004 <-> ( AIRFOIL_BOX, 10, 6, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000563468 <-> ( AIRFOIL_BOX, 0, 7, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00123657 <-> ( AIRFOIL_BOX, 1, 7, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00183924 <-> ( AIRFOIL_BOX, 2, 7, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00217727 <-> ( AIRFOIL_BOX, 3, 7, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.0019459 <-> ( AIRFOIL_BOX, 4, 7, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00112705 <-> ( AIRFOIL_BOX, 5, 7, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 8.57121e-05 <-> ( AIRFOIL_BOX, 6, 7, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000656617 <-> ( AIRFOIL_BOX, 7, 7, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000667909 <-> ( AIRFOIL_BOX, 8, 7, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 2.33225e-06 <-> ( AIRFOIL_BOX, 9, 7, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000431345 <-> ( AIRFOIL_BOX, 10, 7, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000328446 <-> ( AIRFOIL_BOX, 0, 8, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00116958 <-> ( AIRFOIL_BOX, 1, 8, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00248801 <-> ( AIRFOIL_BOX, 2, 8, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00359751 <-> ( AIRFOIL_BOX, 3, 8, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00353511 <-> ( AIRFOIL_BOX, 4, 8, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00215329 <-> ( AIRFOIL_BOX, 5, 8, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000371996 <-> ( AIRFOIL_BOX, 6, 8, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000772607 <-> ( AIRFOIL_BOX, 7, 8, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000933593 <-> ( AIRFOIL_BOX, 8, 8, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000447547 <-> ( AIRFOIL_BOX, 9, 8, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -8.16765e-06 <-> ( AIRFOIL_BOX, 10, 8, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000195637 <-> ( AIRFOIL_BOX, 0, 9, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.000925799 <-> ( AIRFOIL_BOX, 1, 9, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00209665 <-> ( AIRFOIL_BOX, 2, 9, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00253456 <-> ( AIRFOIL_BOX, 3, 9, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 0.00104215 <-> ( AIRFOIL_BOX, 4, 9, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00162718 <-> ( AIRFOIL_BOX, 5, 9, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00328199 <-> ( AIRFOIL_BOX, 6, 9, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00296594 <-> ( AIRFOIL_BOX, 7, 9, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00166848 <-> ( AIRFOIL_BOX, 8, 9, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.000593153 <-> ( AIRFOIL_BOX, 9, 9, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -9.66243e-05 <-> ( AIRFOIL_BOX, 10, 9, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 4.70748e-05 <-> ( AIRFOIL_BOX, 0, 10, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> 6.90174e-05 <-> ( AIRFOIL_BOX, 1, 10, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00077849 <-> ( AIRFOIL_BOX, 2, 10, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00403264 <-> ( AIRFOIL_BOX, 3, 10, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00953458 <-> ( AIRFOIL_BOX, 4, 10, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.0137117 <-> ( AIRFOIL_BOX, 5, 10, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.0129545 <-> ( AIRFOIL_BOX, 6, 10, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00817198 <-> ( AIRFOIL_BOX, 7, 10, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00336478 <-> ( AIRFOIL_BOX, 8, 10, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -0.00083865 <-> ( AIRFOIL_BOX, 9, 10, 0, 1 )
+FFD 2D (control point) <-> AIRFOIL <-> -9.98485e-05 <-> ( AIRFOIL_BOX, 10, 10, 0, 1 )
+
+-------------------- Output Information ( Zone 0 ) ----------------------
+Output mesh file name: unsteady_naca0012_FFD_deform.su2. 
+Cell stiffness scaled by distance to nearest solid surface.
+
+------------- Config File Boundary Information ( Zone 0 ) ---------------
++-----------------------------------------------------------------------+
+|                        Marker Type|                        Marker Name|
++-----------------------------------------------------------------------+
+|                          Far-field|                           FARFIELD|
++-----------------------------------------------------------------------+
+|                  Internal boundary|                               FWH1|
++-----------------------------------------------------------------------+
+|                     Heat flux wall|                            AIRFOIL|
++-----------------------------------------------------------------------+
+Two dimensional problem.
+27342 grid points before partitioning.
+27125 volume elements before partitioning.
+2 surface markers.
+217 boundary elements in index 0 (Marker = AIRFOIL).
+217 boundary elements in index 1 (Marker = FARFIELD).
+Executing the partitioning functions.
+Building the graph adjacency structure.
+Calling ParMETIS... graph partitioning complete (620 edge cuts).
+Distributing ParMETIS coloring.
+Rebalancing vertices.
+Rebalancing volume element connectivity.
+Rebalancing markers and surface elements.
+28590 vertices including ghost points. 
+27745 interior elements including halo cells. 
+27745 quadrilaterals.
+Establishing MPI communication patterns.
+
+----------------------- Preprocessing computations ----------------------
+Setting local point connectivity.
+Checking the numerical grid orientation of the interior elements.
+All volume elements are correctly oriented.
+There has been a re-orientation of 219 LINE surface elements.
+Identify edges and vertices.
+Setting the bound control volume structure.
+Area of the computational grid: 88024.4.
+  Info: Ignoring the following volume output fields/groups:
+  SOLUTION
+Volume output fields: COORDINATES
+  Info: Ignoring the following screen output fields:
+  DRAG, TAVG_DRAG, LIFT, TAVG_LIFT, REL_RMS_DENSITY, REL_RMS_ADJ_DENSITY, CAUCHY
+Screen output fields: INNER_ITER, TIME_ITER
+  Info: Ignoring the following history output groups:
+  AERO_COEFF, TAVG_AERO_COEFF, TAVG_AERO_COEFF, D_TAVG_AERO_COEFF, REL_RMS_RES, REL_RMS_ADJ_AERO_COEFF
+History output group(s): ITER
+Ignoring Convergence Field(s): REL_RMS_DENSITY 
+Warning: No (valid) fields chosen for convergence monitoring. Convergence monitoring inactive.
+Warning: No (valid) fields chosen for time convergence monitoring. Time convergence monitoring inactive.
+
+--------------------- Surface grid deformation (ZONE 0) -----------------
+Performing the deformation of the surface grid.
+1 Free Form Deformation boxes.
+1 Free Form Deformation nested levels.
+FFD box tag: AIRFOIL_BOX. FFD box level: 0. Degrees: 10, 10.
+FFD Blending using Bezier Curves.
+Number of parent boxes: 0. Number of child boxes: 0.
+Corner points: 4. Control points: 242. Surface points: 221.
+Writing a Paraview file of the FFD boxes.
+Writing a Paraview file of the FFD boxes.
+
+----------------- FFD technique (parametric -> cartesian) ---------------
+Checking FFD box dimension.
+Checking FFD box intersections with the solid surfaces.
+SU2 is fixing the planes to maintain a continuous 2nd order derivative.
+Update cartesian coord        | FFD box: AIRFOIL_BOX. Max Diff: 0.00611703.
+Writing a Paraview file of the FFD boxes.
+Writing a Paraview file of the FFD boxes.
+
+------------------- Volumetric grid deformation (ZONE 0) ----------------
+Performing the deformation of the volumetric grid.
+Computing volumes of the grid elements.
+Min. volume: 2.92573e-08, max. volume: 97.0419.
+Min. distance: 9.92609e-05, max. distance: 166.634.
+
+# FGMRES residual history
+# Residual tolerance target = 1e-06
+# Initial residual norm     = 0.0290845
+     0     1
+     10     4.15461e-06
+# FGMRES final (true) residual:
+# Iteration = 14: |res|/|res0| = 7.56024e-07.
+
+Computing volumes of the grid elements.
+Non-linear iter.: 1/1. Linear iter.: 14. Min. area: 2.66094e-08. Error: 7.56024e-07.
+
+Completed in 0.258875 seconds on 4 cores.
+
+----------------------- Write deformed grid files -----------------------
+|SU2 mesh                           |unsteady_naca0012_FFD_deform.su2   |
+|Paraview                           |volume_deformed_00000.vtu          |
+|Paraview surface                   |surface_deformed_00000.vtu         |
+Adding any FFD information to the SU2 file.
+
+------------------------- Finalize Solver -------------------------
+Deleted CNumerics container.
+Deleted CSolver container.
+Deleted CGeometry container.
+Deleted CSurfaceMovement class.
+Deleted CVolumetricMovement class.
+Deleted CConfig container.
+Deleted COutput class.
+
+------------------------- Exit Success (SU2_DEF) ------------------------
+

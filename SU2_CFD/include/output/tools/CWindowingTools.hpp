@@ -27,6 +27,7 @@
 
 #pragma once
 
+#include <deque>
 #include <vector>
 #include <limits>
 #include "../../../../Common/include/option_structure.hpp"
@@ -70,6 +71,8 @@ private:
   su2double val = 0.0;                 /*!< \brief Value of the windowed-time average (of the instantaneous output) from starting time to the current time iteration. */
   su2double cachedSum = 0.0;           /*!< \brief Cached sum of windowWeight*value over all previous iterations. */
   std::vector<su2double> values;       /*!< \brief Vector of instantatneous output values from starting time to the current time iteration.*/
+  std::deque<su2double> limitedValues; /*!< \brief Sliding buffer storing the most recent samples when the window length is bounded. */
+  su2double limitedSum = 0.0;          /*!< \brief Running sum of the sliding window for square weighting. */
   unsigned long lastTimeIter = std::numeric_limits<unsigned long>::max();
   const WINDOW_FUNCTION windowingFunctionId; /*!< \brief ID of the windowing function to use.*/
 
@@ -95,6 +98,8 @@ private:
   inline void Reset() {
     val = 0.0;
     values.clear();
+    limitedValues.clear();
+    limitedSum = 0.0;
     cachedSum = 0.0;
     lastTimeIter = std::numeric_limits<unsigned long>::max();
   }
@@ -104,8 +109,10 @@ private:
    * \param valIn - value of the instantaneous output, that should be added
    * \param currentIter - current time Iteration
    * \param startIter - iteration to start the windowed-time average.
+   * \param maxWindowLength - maximum number of samples contributing to the average (0 = unlimited).
    */
-  void AddValue(su2double valIn, unsigned long curTimeIter,unsigned long startIter = 0);
+  void AddValue(su2double valIn, unsigned long curTimeIter,unsigned long startIter = 0,
+                unsigned long maxWindowLength = 0);
 
 private:
   /*!

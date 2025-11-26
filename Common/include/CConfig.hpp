@@ -417,6 +417,7 @@ private:
   long Unst_AdjointIter;            /*!< \brief Iteration number to begin the reverse time integration in the direct solver for the unsteady adjoint. */
   long Iter_Avg_Objective;          /*!< \brief Iteration the number of time steps to be averaged, counting from the back */
   su2double PhysicalTime;           /*!< \brief Physical time at the current iteration in the solver for unsteady problems. */
+  su2double HeatRelease_Global = 0.0; /*!< \brief Globally integrated Heat_Release lookup value. */
 
   unsigned short nLevels_TimeAccurateLTS;   /*!< \brief Number of time levels for time accurate local time stepping. */
   unsigned short nTimeDOFsADER_DG;          /*!< \brief Number of time DOFs used in the predictor step of ADER-DG. */
@@ -633,6 +634,9 @@ private:
   unsigned short nInc_Inlet;       /*!< \brief Number of inlet boundary treatment types listed. */
   unsigned short nInc_Outlet;      /*!< \brief Number of inlet boundary treatment types listed. */
   su2double Inc_Inlet_Damping;     /*!< \brief Damping factor applied to the iterative updates to the velocity at a pressure inlet in incompressible flow. */
+  su2double Inlet_Sine_Amplitude;  /*!< \brief Amplitude (dimensionless) for sinusoidal inlet forcing. */
+  su2double Inlet_Sine_Frequency;  /*!< \brief Frequency (Hz) for sinusoidal inlet forcing. */
+  su2double Inlet_Sine_Phase;      /*!< \brief Phase offset (rad) for sinusoidal inlet forcing. */
   su2double Inc_Outlet_Damping;    /*!< \brief Damping factor applied to the iterative updates to the pressure at a mass flow outlet in incompressible flow. */
   bool InletUseNormal;             /*!< \brief Flag for whether to use the local normal as the flow direction for a pressure inlet. */
   su2double Linear_Solver_Error;   /*!< \brief Min error of the linear solver for the implicit formulation. */
@@ -844,7 +848,8 @@ private:
   SurfAdjCoeff_FileName,         /*!< \brief Output file with the adjoint variables on the surface. */
   SurfSens_FileName,             /*!< \brief Output file for the sensitivity on the surface (discrete adjoint). */
   VolSens_FileName,              /*!< \brief Output file for the sensitivity in the volume (discrete adjoint). */
-  ObjFunc_Hess_FileName;         /*!< \brief Hessian approximation obtained by the Sobolev smoothing solver. */
+  ObjFunc_Hess_FileName,         /*!< \brief Hessian approximation obtained by the Sobolev smoothing solver. */
+  ObjectiveDFT_FileName;         /*!< \brief Output file for DFT amplitude logging. */
   bool Multizone_Adapt_FileName; /*!< \brief Append zone number to solution and restart file names. */
 
   bool
@@ -1087,6 +1092,8 @@ private:
   DiscreteAdjointDebug;                /*!< \brief Discrete adjoint debug mode using tags. */
   su2double Const_DES;                 /*!< \brief Detached Eddy Simulation Constant. */
   WINDOW_FUNCTION Kind_WindowFct;      /*!< \brief Type of window (weight) function for objective functional. */
+  OBJFUNC_TEMPORAL_MODE ObjectiveTemporalMode; /*!< \brief Temporal operator for windowed objective. */
+  unsigned long ObjectiveDFTHarmonic;  /*!< \brief Harmonic index for DFT-based objective. */
   unsigned short Kind_HybridRANSLES;   /*!< \brief Kind of Hybrid RANS/LES. */
   unsigned short Kind_RoeLowDiss;      /*!< \brief Kind of Roe scheme with low dissipation for unsteady flows. */
 
@@ -5136,6 +5143,9 @@ public:
    * \return Damping factor applied to velocity updates at incompressible pressure inlets.
    */
   su2double GetInc_Inlet_Damping(void) const { return Inc_Inlet_Damping; }
+  su2double GetInletSineAmplitude() const { return Inlet_Sine_Amplitude; }
+  su2double GetInletSineFrequency() const { return Inlet_Sine_Frequency; }
+  su2double GetInletSinePhase() const { return Inlet_Sine_Phase; }
 
   /*!
    * \brief Get the damping factor applied to pressure updates at incompressible mass flow outlet.
@@ -5784,6 +5794,16 @@ public:
   WINDOW_FUNCTION GetKindWindow(void) const { return Kind_WindowFct; }
 
   /*!
+   * \brief Get the temporal operator applied to the objective.
+   */
+  OBJFUNC_TEMPORAL_MODE GetObjectiveTemporalMode(void) const { return ObjectiveTemporalMode; }
+
+  /*!
+   * \brief Get the DFT harmonic index used for the oscillation-amplitude objective.
+   */
+  unsigned long GetObjectiveDFTHarmonic(void) const { return ObjectiveDFTHarmonic; }
+
+  /*!
    * \brief Get the name of the file with the forces breakdown of the problem.
    * \return Name of the file with forces breakdown of the problem.
    */
@@ -5887,6 +5907,11 @@ public:
    * \return Name of the file with the gradient of the objective function.
    */
   string GetObjFunc_Value_FileName(void) const { return ObjFunc_Value_FileName; }
+
+  /*!
+   * \brief Get the name of the file where the DFT amplitude is stored.
+   */
+  string GetObjectiveDFT_FileName(void) const { return ObjectiveDFT_FileName; }
 
   /*!
    * \brief Get the name of the file with the surface information for the flow problem.
@@ -8149,6 +8174,12 @@ public:
   void SetSurface_Species_Variance(unsigned short val_marker, su2double val_surface_species_variance) { Surface_Species_Variance[val_marker] = val_surface_species_variance; }
 
   /*!
+   * \brief Set the globally integrated Heat_Release value.
+   * \param[in] val_heat_release - Value of the Heat_Release integral.
+   */
+  void SetHeatReleaseGlobal(su2double val_heat_release) { HeatRelease_Global = val_heat_release; }
+
+  /*!
    * \brief Get the back pressure (static) at an outlet boundary.
    * \param[in] val_index - Index corresponding to the outlet boundary.
    * \return The outlet pressure.
@@ -8427,6 +8458,12 @@ public:
    * \return The species variance.
    */
   su2double GetSurface_Species_Variance(unsigned short val_marker) const { return Surface_Species_Variance[val_marker]; }
+
+  /*!
+   * \brief Get the globally integrated Heat_Release value.
+   * \return The Heat_Release integral over the domain.
+   */
+  su2double GetHeatReleaseGlobal() const { return HeatRelease_Global; }
 
   /*!
    * \brief Get the back pressure (static) at an outlet boundary.

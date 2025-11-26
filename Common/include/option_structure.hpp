@@ -1469,6 +1469,18 @@ static const MapType<std::string, WINDOW_FUNCTION> Window_Map = {
 };
 
 /*!
+ * \brief Temporal operators available for scalar objective functions.
+ */
+enum class OBJFUNC_TEMPORAL_MODE {
+  TIME_AVERAGE,     /*!< \brief Default windowed time average. */
+  DFT_AMPLITUDE     /*!< \brief Single-frequency DFT magnitude. */
+};
+static const MapType<std::string, OBJFUNC_TEMPORAL_MODE> ObjFuncTemporalMode_Map = {
+  MakePair("AVERAGE", OBJFUNC_TEMPORAL_MODE::TIME_AVERAGE)
+  MakePair("DFT_AMPLITUDE", OBJFUNC_TEMPORAL_MODE::DFT_AMPLITUDE)
+};
+
+/*!
  * \brief Types of hybrid RANS/LES models
  */
 enum ENUM_HYBRIDRANSLES {
@@ -2067,6 +2079,7 @@ enum ENUM_OBJECTIVE {
   TOPOL_DISCRETENESS = 63,      /*!< \brief Measure of the discreteness of the current topology. */
   TOPOL_COMPLIANCE = 64,        /*!< \brief Measure of the discreteness of the current topology. */
   STRESS_PENALTY = 65,          /*!< \brief Penalty function of VM stresses above a maximum value. */
+  HEAT_RELEASE_GLOBAL = 80,     /*!< \brief Global Heat Release Rate */
 };
 static const MapType<std::string, ENUM_OBJECTIVE> Objective_Map = {
   MakePair("DRAG", DRAG_COEFFICIENT)
@@ -2109,6 +2122,7 @@ static const MapType<std::string, ENUM_OBJECTIVE> Objective_Map = {
   MakePair("TOPOL_DISCRETENESS", TOPOL_DISCRETENESS)
   MakePair("TOPOL_COMPLIANCE", TOPOL_COMPLIANCE)
   MakePair("STRESS_PENALTY", STRESS_PENALTY)
+  MakePair("HEAT_RELEASE_GLOBAL", HEAT_RELEASE_GLOBAL)
 };
 
 /*!

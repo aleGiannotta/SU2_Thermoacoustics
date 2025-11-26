@@ -39,6 +39,8 @@ class CSpeciesFlameletSolver final : public CSpeciesSolver {
  private:
   FluidFlamelet_ParsedOptions flamelet_config_options;
   bool include_mixture_fraction = false; /*!< \brief include mixture fraction as a controlling variable. */
+  int heat_release_lookup_idx = -1; /*!< \brief index of the Heat_Release lookup entry (if available). */
+  su2double heat_release_global = 0.0; /*!< \brief Volume integral of the Heat_Release lookup. */
   /*!
    * \brief Compute the preconditioner for low-Mach flows.
    * \param[in] geometry - Geometrical definition of the problem.
@@ -195,4 +197,9 @@ class CSpeciesFlameletSolver final : public CSpeciesSolver {
    */
   void Viscous_Residual(const unsigned long iEdge, const CGeometry* geometry, CSolver** solver_container, CNumerics* numerics,
                         const CConfig* config) final;
+
+  /*!
+   * \brief Get the globally integrated heat-release rate (based on the Heat_Release lookup).
+   */
+  inline su2double GetHeatReleaseGlobal() const { return heat_release_global; }
 };

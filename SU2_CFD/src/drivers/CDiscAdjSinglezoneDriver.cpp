@@ -32,6 +32,7 @@
 #include "../../include/iteration/CIterationFactory.hpp"
 #include "../../include/iteration/CTurboIteration.hpp"
 #include "../../../Common/include/toolboxes/CQuasiNewtonInvLeastSquares.hpp"
+#include <algorithm>
 
 CDiscAdjSinglezoneDriver::CDiscAdjSinglezoneDriver(char* confFile,
                                                    unsigned short val_nZone,
@@ -316,15 +317,45 @@ void CDiscAdjSinglezoneDriver::SetAdjObjFunction(){
   su2double seeding = 1.0;
 
   if (config->GetTime_Domain()) {
-    const auto IterAvg_Obj = config->GetIter_Avg_Objective();
-    if (TimeIter < IterAvg_Obj) {
-      /*--- Default behavior when no window is chosen is to use Square-Windowing, i.e. the numerator equals 1.0 ---*/
-      auto windowEvaluator = CWindowingTools();
-      const su2double weight = windowEvaluator.GetWndWeight(config->GetKindWindow(), TimeIter, IterAvg_Obj - 1);
-      seeding = weight / IterAvg_Obj;
-    }
-    else {
+    if (config->GetObjectiveTemporalMode() == OBJFUNC_TEMPORAL_MODE::DFT_AMPLITUDE) {
       seeding = 0.0;
+      if (rank == MASTER_NODE) {
+        auto* ftfManager = GetFTFManager();
+        if (ftfManager && ftfManager->IsFinalized()) {
+          long directIter = static_cast<long>(config->GetUnst_AdjointIter()) -
+                            static_cast<long>(TimeIter) - 1;
+          if (directIter >= 0 && ftfManager->IsInWindow(static_cast<unsigned long>(directIter))) {
+            seeding = ftfManager->GetAlpha(static_cast<unsigned long>(directIter));
+          }
+        }
+      }
+    } else {
+      seeding = 0.0;
+      const auto windowStart = config->GetStartWindowIteration();
+      const long totalDirectItersLong = config->GetUnst_AdjointIter();
+      if (totalDirectItersLong > 0) {
+        const auto totalDirectIters = static_cast<unsigned long>(totalDirectItersLong);
+        if (totalDirectIters > windowStart) {
+          const unsigned long availableSamples = totalDirectIters - windowStart;
+          unsigned long windowLength = config->GetIter_Avg_Objective();
+          if (windowLength == 0 || windowLength > availableSamples) {
+            windowLength = availableSamples;
+          }
+          if (windowLength > 0) {
+            const unsigned long effectiveStart = std::max(windowStart, totalDirectIters - windowLength);
+            const unsigned long effectiveEnd = effectiveStart + windowLength;
+            long directIter = totalDirectItersLong - static_cast<long>(TimeIter) - 1;
+            if (directIter >= static_cast<long>(effectiveStart) &&
+                directIter < static_cast<long>(effectiveEnd)) {
+              const auto mappedIter = static_cast<unsigned long>(directIter - static_cast<long>(effectiveStart));
+              auto windowEvaluator = CWindowingTools();
+              const su2double weight =
+                  windowEvaluator.GetWndWeight(config->GetKindWindow(), mappedIter, windowLength - 1);
+              seeding = weight / static_cast<su2double>(windowLength);
+            }
+          }
+        }
+      }
     }
   }
   if (rank == MASTER_NODE) {
@@ -372,6 +403,27 @@ void CDiscAdjSinglezoneDriver::SetObjFunction(){
 
   if (rank == MASTER_NODE){
     AD::RegisterOutput(ObjFunc);
+  }
+
+  if (rank == MASTER_NODE && config->GetObjectiveTemporalMode() == OBJFUNC_TEMPORAL_MODE::DFT_AMPLITUDE) {
+    if (auto* ftfManager = GetFTFManager()) {
+      if (ftfManager->IsFinalized()) return;
+      unsigned long sampleIter = config->GetTimeIter();
+      bool canSample = true;
+      if (config->GetDiscrete_Adjoint()) {
+        long directIter = static_cast<long>(config->GetUnst_AdjointIter()) -
+                          static_cast<long>(TimeIter) - 1;
+        if (directIter >= 0) {
+          sampleIter = static_cast<unsigned long>(directIter);
+        } else {
+          canSample = false;
+        }
+      }
+      if (canSample) {
+        ftfManager->AddSample(sampleIter, ObjFunc);
+        MaybeFinalizeFTF(sampleIter);
+      }
+    }
   }
 
 }

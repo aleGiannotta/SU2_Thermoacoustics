@@ -2321,11 +2321,20 @@ void CIncEulerSolver::BC_Inlet(CGeometry *geometry, CSolver **solver_container,
 
         /*--- Velocity and temperature (if required) been specified at the inlet. ---*/
 
-      case INLET_TYPE::VELOCITY_INLET:
-
-        /*--- Retrieve the specified velocity and temperature for the inlet. ---*/
+      case INLET_TYPE::VELOCITY_INLET: {
+        /*--- Retrieve the specified velocity magnitude (non-dimensional). ---*/
 
         Vel_Mag  = Inlet_Ptotal[val_marker][iVertex]/config->GetVelocity_Ref();
+
+        /*--- Optional sinusoidal forcing applied directly to the inlet velocity. ---*/
+        const su2double sine_amp = config->GetInletSineAmplitude();
+        const su2double sine_freq = config->GetInletSineFrequency();
+        if ((sine_amp != 0.0) && (config->GetTime_Marching() != TIME_MARCHING::STEADY)) {
+          const su2double time = config->GetPhysicalTime();
+          const su2double phase = config->GetInletSinePhase();
+          const su2double omega = 2.0 * PI_NUMBER * sine_freq;
+          Vel_Mag *= (1.0 + sine_amp * sin(omega * time + phase));
+        }
 
         /*--- Store the velocity in the primitive variable vector. ---*/
 
@@ -2337,6 +2346,7 @@ void CIncEulerSolver::BC_Inlet(CGeometry *geometry, CSolver **solver_container,
         V_inlet[prim_idx.Temperature()] = Inlet_Ttotal[val_marker][iVertex]/config->GetTemperature_Ref();
 
         break;
+      }
 
         /*--- Stagnation pressure has been specified at the inlet. ---*/
 

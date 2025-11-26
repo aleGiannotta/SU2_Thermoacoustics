@@ -1814,7 +1814,8 @@ void COutput::PostprocessHistoryData(CConfig *config){
           it = windowedTimeAverages.insert({fieldIdentifier, CWindowedAverage(config->GetKindWindow())}).first;
         }
         auto& timeAverage = it->second;
-        timeAverage.AddValue(currentField.value,config->GetTimeIter(), config->GetStartWindowIteration()); //Collecting Values for Windowing
+        timeAverage.AddValue(currentField.value, config->GetTimeIter(), config->GetStartWindowIteration(),
+                             config->GetIter_Avg_Objective()); //Collecting Values for Windowing
         SetHistoryOutputValue("TAVG_" + fieldIdentifier, timeAverage.GetVal());
         if (config->GetDirectDiff() != NO_DERIVATIVE) {
           SetHistoryOutputValue("D_TAVG_" + fieldIdentifier, SU2_TYPE::GetDerivative(timeAverage.GetVal()));

@@ -40,6 +40,29 @@
 
 using namespace std;
 
+namespace {
+bool ObjectiveIsAerodynamicCoefficient(unsigned short kindObj) {
+  switch (kindObj) {
+    case DRAG_COEFFICIENT:
+    case LIFT_COEFFICIENT:
+    case SIDEFORCE_COEFFICIENT:
+    case FORCE_X_COEFFICIENT:
+    case FORCE_Y_COEFFICIENT:
+    case FORCE_Z_COEFFICIENT:
+    case THRUST_COEFFICIENT:
+    case TORQUE_COEFFICIENT:
+    case MOMENT_X_COEFFICIENT:
+    case MOMENT_Y_COEFFICIENT:
+    case MOMENT_Z_COEFFICIENT:
+    case FIGURE_OF_MERIT:
+    case EFFICIENCY:
+      return true;
+    default:
+      return false;
+  }
+}
+}
+
 CDiscAdjDeformationDriver::CDiscAdjDeformationDriver(char* confFile, SU2_Comm MPICommunicator)
     : CDriverBase(confFile, 1, MPICommunicator) {
   /*--- Preprocessing of the config files. ---*/
@@ -749,6 +772,20 @@ void CDiscAdjDeformationDriver::SetProjection_AD(CGeometry* geometry, CConfig* c
     }
   }
 
+  if (ObjectiveIsAerodynamicCoefficient(config->GetKind_ObjFunc())) {
+    const su2double rho_ref = config->GetDensity_Ref();
+    const su2double vel_ref = config->GetVelocity_Ref();
+    const su2double area_ref = config->GetRefArea();
+    const su2double coeff_scale = 0.5 * rho_ref * vel_ref * vel_ref * area_ref;
+    if (coeff_scale > 0.0) {
+      for (iDV = 0; iDV < nDV; iDV++) {
+        for (iDV_Value = 0; iDV_Value < config->GetnDV_Value(iDV); iDV_Value++) {
+          Gradient[iDV][iDV_Value] /= coeff_scale;
+        }
+      }
+    }
+  }
+
   AD::Reset();
 }
 
@@ -1001,3 +1038,4 @@ void CDiscAdjDeformationDriver::DerivativeTreatment_Gradient(CGeometry* geometry
     solver->RecordTapeAndCalculateOriginalGradient(geometry, surface_movement, grid_movement, config, Gradient);
   }
 }
+#include "../../../Common/include/option_structure.hpp"

@@ -66,25 +66,71 @@ su2double CWindowingTools::BumpWindow(unsigned long curTimeIter, unsigned long e
    * and it acts as a normalization constant */
 }
 
-void CWindowedAverage::AddValue(su2double valIn, unsigned long curTimeIter,unsigned long startIter){
+void CWindowedAverage::AddValue(su2double valIn, unsigned long curTimeIter,unsigned long startIter,
+                                unsigned long maxWindowLength) {
   if (curTimeIter < startIter) return;  // Averaging not yet started.
-  const unsigned long windowWidth = curTimeIter - startIter + 1;  // Calculate total width of window for this iteration
-  if (curTimeIter != lastTimeIter) {           // Handle new timestep
-    if (curTimeIter > startIter) {  // Only update sum over previous timesteps, if there are any
-      cachedSum = UpdateCachedSum(windowWidth-1);  // Save weighted sum up to last time step for later use
+
+  /*--- Unlimited window: original behavior. ---*/
+  if (maxWindowLength == 0) {
+    const unsigned long windowWidth = curTimeIter - startIter + 1;  // Calculate total width of window for this iteration
+    if (curTimeIter != lastTimeIter) {           // Handle new timestep
+      if (curTimeIter > startIter) {  // Only update sum over previous timesteps, if there are any
+        cachedSum = UpdateCachedSum(windowWidth-1);  // Save weighted sum up to last time step for later use
+      }
+      lastTimeIter = curTimeIter;                // New time iteration step, update iteration number.
+      // Add new sample
+      if (windowingFunctionId != WINDOW_FUNCTION::SQUARE) {
+        values.push_back(valIn);  // Add new sample to list for non-trivial windows
+      }
     }
-    lastTimeIter = curTimeIter;                // New time iteration step, update iteration number.
-    // Add new sample
-    if (windowingFunctionId != WINDOW_FUNCTION::SQUARE) {
-      values.push_back(valIn);  // Add new sample to list for non-trivial windows
+    else {  // We are within the same timestep. Update the last sample
+      values.back() = valIn;
+    }
+    // Update the windowed-average from the weighted sum of previous samples and the latest sample
+    const su2double totalSum = cachedSum + valIn*GetWndWeight(windowingFunctionId, windowWidth-1, windowWidth-1);
+    val = totalSum / static_cast<su2double>(windowWidth);
+    return;
+  }
+
+  /*--- Limited window: keep only the most recent samples. ---*/
+  if (curTimeIter != lastTimeIter) {
+    lastTimeIter = curTimeIter;
+    limitedValues.push_back(valIn);
+    limitedSum += valIn;
+    if (limitedValues.size() > maxWindowLength) {
+      limitedSum -= limitedValues.front();
+      limitedValues.pop_front();
+    }
+  } else {
+    if (!limitedValues.empty()) {
+      limitedSum += valIn - limitedValues.back();
+      limitedValues.back() = valIn;
+    } else {
+      limitedValues.push_back(valIn);
+      limitedSum = valIn;
     }
   }
-  else {  // We are within the same timestep. Update the last sample
-    values.back() = valIn;
+
+  if (limitedValues.empty()) {
+    val = 0.0;
+    return;
   }
-  // Update the windowed-average from the weighted sum of previous samples and the latest sample
-  const su2double totalSum = cachedSum + valIn*GetWndWeight(windowingFunctionId, windowWidth-1, windowWidth-1);
-  val = totalSum / static_cast<su2double>(windowWidth);
+
+  const unsigned long windowWidth = limitedValues.size();
+  if (windowingFunctionId == WINDOW_FUNCTION::SQUARE) {
+    val = limitedSum / static_cast<su2double>(windowWidth);
+    return;
+  }
+
+  const unsigned long endIndex = windowWidth - 1;
+  su2double weightedSum = 0.0;
+  unsigned long idx = 0;
+  for (const auto& sample : limitedValues) {
+    const su2double weight = GetWndWeight(windowingFunctionId, idx, endIndex);
+    weightedSum += sample * weight;
+    ++idx;
+  }
+  val = weightedSum / static_cast<su2double>(windowWidth);
 }
 
 su2double CWindowedAverage::UpdateCachedSum(unsigned long windowWidth) const {
@@ -99,5 +145,4 @@ su2double CWindowedAverage::UpdateCachedSum(unsigned long windowWidth) const {
   }
   return weightedSum;
 }
-
 

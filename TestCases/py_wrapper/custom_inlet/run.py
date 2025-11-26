@@ -24,17 +24,16 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with SU2. If not, see <http://www.gnu.org/licenses/>.
 
-import sys
+import sys, os
 import pysu2
 import math
-# from mpi4py import MPI
+from mpi4py import MPI
 
 def main():
   """
   Run the flow solver with a custom inlet (function of time and space).
   """
-  # comm = MPI.COMM_WORLD
-  comm = 0
+  comm = MPI.COMM_WORLD
 
   # Initialize the primal driver of SU2, this includes solver preprocessing.
   try:
@@ -60,7 +59,7 @@ def main():
       for i_vertex in range(driver.GetNumberMarkerNodes(marker_id)):
         y = driver.MarkerCoordinates(marker_id)(i_vertex, 1)
         t = time_iter * dt
-        pt = 1e5 + 2e4 * y / 0.01 * (1 - math.cos(2 * math.pi * t / 0.1))
+        pt = 1e5 + 2e4 * y / 0.01 * (1 - math.cos(4 * 2 * math.pi * t / 0.1))
         driver.SetMarkerCustomInletFlowVar1(marker_id, i_vertex, pt)
     driver.BoundaryConditionsUpdate()
 
