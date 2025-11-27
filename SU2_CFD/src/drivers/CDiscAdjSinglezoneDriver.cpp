@@ -317,15 +317,18 @@ void CDiscAdjSinglezoneDriver::SetAdjObjFunction(){
   su2double seeding = 1.0;
 
   if (config->GetTime_Domain()) {
-    if (config->GetObjectiveTemporalMode() == OBJFUNC_TEMPORAL_MODE::DFT_AMPLITUDE) {
+    if (config->GetObjectiveTemporalMode() == OBJFUNC_TEMPORAL_MODE::DFT_AMPLITUDE ||
+        config->GetObjectiveTemporalMode() == OBJFUNC_TEMPORAL_MODE::DFT_PHASE) {
       seeding = 0.0;
       if (rank == MASTER_NODE) {
-        auto* ftfManager = GetFTFManager();
-        if (ftfManager && ftfManager->IsFinalized()) {
+        auto* dftManager = GetDFTManager();
+        if (dftManager && dftManager->IsFinalized()) {
           long directIter = static_cast<long>(config->GetUnst_AdjointIter()) -
                             static_cast<long>(TimeIter) - 1;
-          if (directIter >= 0 && ftfManager->IsInWindow(static_cast<unsigned long>(directIter))) {
-            seeding = ftfManager->GetAlpha(static_cast<unsigned long>(directIter));
+          if (directIter >= 0 && dftManager->IsInWindow(static_cast<unsigned long>(directIter))) {
+            seeding =
+                dftManager->GetKernel(config->GetObjectiveTemporalMode(),
+                                      static_cast<unsigned long>(directIter));
           }
         }
       }
@@ -405,9 +408,10 @@ void CDiscAdjSinglezoneDriver::SetObjFunction(){
     AD::RegisterOutput(ObjFunc);
   }
 
-  if (rank == MASTER_NODE && config->GetObjectiveTemporalMode() == OBJFUNC_TEMPORAL_MODE::DFT_AMPLITUDE) {
-    if (auto* ftfManager = GetFTFManager()) {
-      if (ftfManager->IsFinalized()) return;
+  if (rank == MASTER_NODE &&
+      config->GetObjectiveTemporalMode() != OBJFUNC_TEMPORAL_MODE::TIME_AVERAGE) {
+    if (auto* dftManager = GetDFTManager()) {
+      if (dftManager->IsFinalized()) return;
       unsigned long sampleIter = config->GetTimeIter();
       bool canSample = true;
       if (config->GetDiscrete_Adjoint()) {
@@ -420,8 +424,8 @@ void CDiscAdjSinglezoneDriver::SetObjFunction(){
         }
       }
       if (canSample) {
-        ftfManager->AddSample(sampleIter, ObjFunc);
-        MaybeFinalizeFTF(sampleIter);
+        dftManager->AddSample(sampleIter, ObjFunc);
+        MaybeFinalizeDFT(sampleIter);
       }
     }
   }

@@ -7484,7 +7484,8 @@ void CConfig::SetOutput(SU2_COMPONENT val_software, unsigned short val_izone) {
     }
   }
 
-  if (ObjectiveTemporalMode == OBJFUNC_TEMPORAL_MODE::DFT_AMPLITUDE) {
+  if (ObjectiveTemporalMode == OBJFUNC_TEMPORAL_MODE::DFT_AMPLITUDE ||
+      ObjectiveTemporalMode == OBJFUNC_TEMPORAL_MODE::DFT_PHASE) {
     ObjFunc_Value_FileName = ObjectiveDFT_FileName;
   }
 

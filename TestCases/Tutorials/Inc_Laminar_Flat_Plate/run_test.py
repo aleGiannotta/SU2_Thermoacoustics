@@ -115,6 +115,25 @@ def read_dft_amplitude(amplitude_path: Path) -> float:
         raise RuntimeError(f"No numeric amplitude found in {amplitude_path}.")
     return value
 
+
+def read_dft_phase(amplitude_path: Path) -> float:
+    if not amplitude_path.exists():
+        raise RuntimeError(f"{amplitude_path} not found.")
+    value = None
+    for line in amplitude_path.read_text().splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        tokens = stripped.replace(",", " ").split()
+        if len(tokens) >= 2 and tokens[0].upper() == "DFT_PHASE":
+            try:
+                value = float(tokens[1])
+            except ValueError:
+                continue
+    if value is None:
+        raise RuntimeError(f"No numeric phase found in {amplitude_path}.")
+    return value
+
 if __name__ == "__main__":
     cfg = Path("lam_flatplate_direct.cfg")
     cfg_dir = cfg.parent
@@ -126,6 +145,10 @@ if __name__ == "__main__":
         objective_label = "DFT amplitude"
         def read_objective() -> float:
             return read_dft_amplitude(amp_file)
+    elif objective_mode == "DFT_PHASE":
+        objective_label = "DFT phase"
+        def read_objective() -> float:
+            return read_dft_phase(amp_file)
     else:
         objective_label = "tavg[CD]"
         def read_objective() -> float:

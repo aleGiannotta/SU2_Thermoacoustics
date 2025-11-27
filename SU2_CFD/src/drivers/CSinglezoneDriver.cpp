@@ -40,7 +40,7 @@ CSinglezoneDriver::CSinglezoneDriver(char* confFile,
   /*--- Initialize the counter for TimeIter ---*/
   TimeIter = 0;
 
-  InitializeFTFManager();
+  InitializeDFTManager();
 }
 
 CSinglezoneDriver::~CSinglezoneDriver() = default;
@@ -104,7 +104,7 @@ void CSinglezoneDriver::StartSolver() {
 
   }
 
-  if (ObjectiveFTFManager) MaybeFinalizeFTF(TimeIter);
+  if (ObjectiveDFTManager) MaybeFinalizeDFT(TimeIter);
 }
 
 void CSinglezoneDriver::Preprocess(unsigned long TimeIter) {
@@ -265,7 +265,7 @@ bool CSinglezoneDriver::Monitor(unsigned long TimeIter){
 
   TimeDomain = config_container[ZONE_0]->GetTime_Domain();
 
-  SampleFTFObjective(TimeIter);
+  SampleDFTObjective(TimeIter);
 
 
   /*--- Check whether the inner solver has converged --- */
@@ -320,24 +320,24 @@ bool CSinglezoneDriver::GetTimeConvergence() const{
   return output_container[ZONE_0]->GetCauchyCorrectedTimeConvergence(config_container[ZONE_0]);
 }
 
-void CSinglezoneDriver::InitializeFTFManager() {
+void CSinglezoneDriver::InitializeDFTManager() {
   auto* zone_config = config_container[ZONE_0];
   if (!zone_config) return;
   if (!zone_config->GetTime_Domain()) return;
-  if (zone_config->GetObjectiveTemporalMode() != OBJFUNC_TEMPORAL_MODE::DFT_AMPLITUDE) return;
+  if (zone_config->GetObjectiveTemporalMode() == OBJFUNC_TEMPORAL_MODE::TIME_AVERAGE) return;
 
-  ObjectiveFTFManager = std::make_unique<CObjectiveFTFManager>(zone_config);
+  ObjectiveDFTManager = std::make_unique<CObjectiveDFTManager>(zone_config);
   if (zone_config->GetDiscrete_Adjoint()) {
-    ObjectiveFTFManager->LoadAlphaFromFile();
+    ObjectiveDFTManager->LoadAlphaFromFile();
   }
 }
 
-void CSinglezoneDriver::SampleFTFObjective(unsigned long Iter) {
-  if (!ObjectiveFTFManager) return;
+void CSinglezoneDriver::SampleDFTObjective(unsigned long Iter) {
+  if (!ObjectiveDFTManager) return;
   if (!config_container[ZONE_0]->GetTime_Domain()) return;
   if (config_container[ZONE_0]->GetDiscrete_Adjoint()) return;
   if (rank != MASTER_NODE) return;
-  if (!ObjectiveFTFManager->IsInWindow(Iter)) return;
+  if (!ObjectiveDFTManager->IsInWindow(Iter)) return;
 
   su2double totalObjective = 0.0;
   auto* solvers = solver_container[ZONE_0][INST_0][MESH_0];
@@ -346,19 +346,19 @@ void CSinglezoneDriver::SampleFTFObjective(unsigned long Iter) {
     totalObjective += solvers[iSol]->GetTotal_ComboObj();
   }
 
-  ObjectiveFTFManager->AddSample(Iter, totalObjective);
-  MaybeFinalizeFTF(Iter);
+  ObjectiveDFTManager->AddSample(Iter, totalObjective);
+  MaybeFinalizeDFT(Iter);
 }
 
-void CSinglezoneDriver::MaybeFinalizeFTF(unsigned long Iter) {
-  if (!ObjectiveFTFManager) return;
-  if (ObjectiveFTFManager->IsFinalized()) return;
-  if (!ObjectiveFTFManager->HasCompleteWindow()) return;
+void CSinglezoneDriver::MaybeFinalizeDFT(unsigned long Iter) {
+  if (!ObjectiveDFTManager) return;
+  if (ObjectiveDFTManager->IsFinalized()) return;
+  if (!ObjectiveDFTManager->HasCompleteWindow()) return;
   // Allow finalization once the window is completely populated,
   // even if samples arrive in reverse order (discrete adjoint replay).
-  if (Iter < ObjectiveFTFManager->GetWindowStart()) return;
-  ObjectiveFTFManager->FinalizeDFT();
+  if (Iter < ObjectiveDFTManager->GetWindowStart()) return;
+  ObjectiveDFTManager->FinalizeDFT();
   if (rank == MASTER_NODE) {
-    ObjectiveFTFManager->WriteAmplitudeFile();
+    ObjectiveDFTManager->WriteAmplitudeFile();
   }
 }

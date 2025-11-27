@@ -69,10 +69,12 @@ def read_amplitude_file(path: Path) -> float:
             stripped = line.strip()
             if not stripped or stripped.startswith("#"):
                 continue
-            try:
-                value = float(stripped.split()[-1])
-            except ValueError:
-                continue
+            tokens = stripped.replace(",", " ").split()
+            if len(tokens) >= 2 and tokens[0].upper() == "DFT_AMPLITUDE":
+                try:
+                    value = float(tokens[1])
+                except ValueError:
+                    continue
     if value is None:
         raise RuntimeError(f"No numeric amplitude found in {path}.")
     return value

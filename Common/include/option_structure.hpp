@@ -1473,11 +1473,13 @@ static const MapType<std::string, WINDOW_FUNCTION> Window_Map = {
  */
 enum class OBJFUNC_TEMPORAL_MODE {
   TIME_AVERAGE,     /*!< \brief Default windowed time average. */
-  DFT_AMPLITUDE     /*!< \brief Single-frequency DFT magnitude. */
+  DFT_AMPLITUDE,    /*!< \brief Single-frequency DFT magnitude. */
+  DFT_PHASE         /*!< \brief Single-frequency DFT phase. */
 };
 static const MapType<std::string, OBJFUNC_TEMPORAL_MODE> ObjFuncTemporalMode_Map = {
   MakePair("AVERAGE", OBJFUNC_TEMPORAL_MODE::TIME_AVERAGE)
   MakePair("DFT_AMPLITUDE", OBJFUNC_TEMPORAL_MODE::DFT_AMPLITUDE)
+  MakePair("DFT_PHASE", OBJFUNC_TEMPORAL_MODE::DFT_PHASE)
 };
 
 /*!
