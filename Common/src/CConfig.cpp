@@ -1596,6 +1596,20 @@ void CConfig::SetConfig_Options() {
   addDoubleOption("INLET_SINE_FREQUENCY", Inlet_Sine_Frequency, 0.0);
   /*!\brief INLET_SINE_PHASE \n DESCRIPTION: Phase offset (radians) of sinusoidal inlet forcing. \ingroup Config*/
   addDoubleOption("INLET_SINE_PHASE", Inlet_Sine_Phase, 0.0);
+  /*!\brief INLET_CHIRP_AMPLITUDE \n DESCRIPTION: Amplitude of chirped inlet forcing (0 disables chirp forcing). \ingroup Config*/
+  addDoubleOption("INLET_CHIRP_AMPLITUDE", Inlet_Chirp_Amplitude, 0.0);
+  /*!\brief INLET_CHIRP_FREQ_START \n DESCRIPTION: Start frequency (Hz) of chirped inlet forcing. \ingroup Config*/
+  addDoubleOption("INLET_CHIRP_FREQ_START", Inlet_Chirp_Freq_Start, 0.0);
+  /*!\brief INLET_CHIRP_FREQ_END \n DESCRIPTION: End frequency (Hz) of chirped inlet forcing. \ingroup Config*/
+  addDoubleOption("INLET_CHIRP_FREQ_END", Inlet_Chirp_Freq_End, 0.0);
+  /*!\brief INLET_CHIRP_DURATION \n DESCRIPTION: Duration (s) of chirped inlet forcing. \ingroup Config*/
+  addDoubleOption("INLET_CHIRP_DURATION", Inlet_Chirp_Duration, 0.0);
+  /*!\brief INLET_CHIRP_START_TIME \n DESCRIPTION: Start time (s) of chirped inlet forcing. \ingroup Config*/
+  addDoubleOption("INLET_CHIRP_START_TIME", Inlet_Chirp_Start_Time, 0.0);
+  /*!\brief INLET_CHIRP_PHASE \n DESCRIPTION: Initial phase offset (radians) of chirped inlet forcing. \ingroup Config*/
+  addDoubleOption("INLET_CHIRP_PHASE", Inlet_Chirp_Phase, 0.0);
+  /*!\brief INLET_CHIRP_METHOD \n DESCRIPTION: Sweep law for chirped inlet forcing (LINEAR, LOGARITHMIC). \ingroup Config*/
+  addStringOption("INLET_CHIRP_METHOD", Inlet_Chirp_Method, string("LINEAR"));
   /*!\brief INC_INLET_TYPE \n DESCRIPTION: List of inlet types for incompressible flows. List length must match number of inlet markers. Options: VELOCITY_INLET, PRESSURE_INLET, INPUT_FILE. \ingroup Config*/
   addEnumListOption("INC_INLET_TYPE", nInc_Inlet, Kind_Inc_Inlet, Inlet_Map);
   addBoolOption("SPECIFIED_INLET_PROFILE", Inlet_From_File, false);

@@ -1,0 +1,16 @@
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
+\contentsline {section}{\numberline {2}Numerical Methodology}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Governing Equations and FGM Model}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Bunsen Flame Configuration}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Geometry Parameterization Using FFD}{3}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Broadband Chirp Excitation}{4}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Global Heat-Release-Rate Extraction}{4}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}FTF Reconstruction}{5}{subsection.2.6}%
+\contentsline {section}{\numberline {3}Results and Discussion}{5}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Baseline Steady Flame}{6}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Baseline Chirp Response}{6}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Baseline FTF}{6}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Effect of FFD Geometry Variations}{6}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Trend Analysis}{7}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Conclusions}{7}{section.4}%
+\contentsline {section}{\numberline {A}Optional Supplementary Material}{8}{appendix.A}%

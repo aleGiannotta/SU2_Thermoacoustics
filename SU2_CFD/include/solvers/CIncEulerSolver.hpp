@@ -257,6 +257,14 @@ public:
   void Evaluate_ObjFunc(const CConfig *config, CSolver **solver) final {
     Total_ComboObj = EvaluateCommonObjFunc(*config);
 
+    if (config->GetKind_ObjFunc(0) == HEAT_RELEASE_GLOBAL &&
+        config->GetKind_Species_Model() == SPECIES_MODEL::FLAMELET &&
+        solver[SPECIES_SOL] != nullptr) {
+      const su2double weight = config->GetWeight_ObjFunc(0);
+      Total_ComboObj -= weight * config->GetHeatReleaseGlobal();
+      Total_ComboObj += weight * solver[SPECIES_SOL]->GetTotal_HeatReleaseObjective();
+    }
+
     if (config->GetWeakly_Coupled_Heat()) {
       solver[HEAT_SOL]->Evaluate_ObjFunc(config, solver);
       Total_ComboObj += solver[HEAT_SOL]->GetTotal_ComboObj();

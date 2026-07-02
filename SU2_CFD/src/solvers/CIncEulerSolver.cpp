@@ -2326,13 +2326,41 @@ void CIncEulerSolver::BC_Inlet(CGeometry *geometry, CSolver **solver_container,
 
         Vel_Mag  = Inlet_Ptotal[val_marker][iVertex]/config->GetVelocity_Ref();
 
-        /*--- Optional sinusoidal forcing applied directly to the inlet velocity. ---*/
+        /*--- Optional harmonic forcing applied directly to the inlet velocity.
+         *    If a chirp amplitude is provided, it takes precedence over the
+         *    legacy single-frequency sine forcing. ---*/
+        const su2double chirp_amp = config->GetInletChirpAmplitude();
         const su2double sine_amp = config->GetInletSineAmplitude();
-        const su2double sine_freq = config->GetInletSineFrequency();
-        if ((sine_amp != 0.0) && (config->GetTime_Marching() != TIME_MARCHING::STEADY)) {
+        if ((chirp_amp != 0.0) && (config->GetTime_Marching() != TIME_MARCHING::STEADY)) {
           const su2double time = config->GetPhysicalTime();
+          const su2double chirp_start = config->GetInletChirpStartTime();
+          const su2double chirp_duration = config->GetInletChirpDuration();
+          if ((chirp_duration > 0.0) && (time >= chirp_start) && (time <= chirp_start + chirp_duration)) {
+            const su2double t_rel = time - chirp_start;
+            const su2double chirp_phase = config->GetInletChirpPhase();
+            const su2double freq_start = config->GetInletChirpFreqStart();
+            const su2double freq_end = config->GetInletChirpFreqEnd();
+            const string chirp_method = config->GetInletChirpMethod();
+            su2double phase = chirp_phase;
+
+            if ((chirp_method == "LOGARITHMIC") || (chirp_method == "logarithmic")) {
+              if ((freq_start <= 0.0) || (freq_end <= 0.0)) {
+                SU2_MPI::Error("LOGARITHMIC inlet chirp requires positive INLET_CHIRP_FREQ_START and INLET_CHIRP_FREQ_END.",
+                               CURRENT_FUNCTION);
+              }
+              const su2double growth = log(freq_end / freq_start) / chirp_duration;
+              phase += 2.0 * PI_NUMBER * freq_start * (exp(growth * t_rel) - 1.0) / growth;
+            } else {
+              const su2double chirp_rate = (freq_end - freq_start) / chirp_duration;
+              phase += 2.0 * PI_NUMBER * (freq_start * t_rel + 0.5 * chirp_rate * t_rel * t_rel);
+            }
+            Vel_Mag *= (1.0 + chirp_amp * sin(phase));
+          }
+        } else if ((sine_amp != 0.0) && (config->GetTime_Marching() != TIME_MARCHING::STEADY)) {
+          const su2double sine_freq = config->GetInletSineFrequency();
           const su2double phase = config->GetInletSinePhase();
           const su2double omega = 2.0 * PI_NUMBER * sine_freq;
+          const su2double time = config->GetPhysicalTime();
           Vel_Mag *= (1.0 + sine_amp * sin(omega * time + phase));
         }
 

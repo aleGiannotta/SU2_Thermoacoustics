@@ -202,4 +202,9 @@ class CSpeciesFlameletSolver final : public CSpeciesSolver {
    * \brief Get the globally integrated heat-release rate (based on the Heat_Release lookup).
    */
   inline su2double GetHeatReleaseGlobal() const { return heat_release_global; }
+
+  /*!
+   * \brief Get the active heat-release objective contribution.
+   */
+  inline su2double GetTotal_HeatReleaseObjective() const override { return heat_release_global; }
 };

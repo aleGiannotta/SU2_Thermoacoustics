@@ -233,7 +233,6 @@ void CDiscAdjSinglezoneDriver::Postprocess() {
 
       /*--- Compute the geometrical sensitivities ---*/
       SecondaryRecording();
-
       iteration->Postprocess(output_container[ZONE_0], integration_container, geometry_container,
                              solver_container, numerics_container, config_container,
                              surface_movement, grid_movement, FFDBox, ZONE_0, INST_0);
@@ -314,6 +313,15 @@ void CDiscAdjSinglezoneDriver::SetRecording(RECORDING kind_recording){
 }
 
 void CDiscAdjSinglezoneDriver::SetAdjObjFunction(){
+  if (ZeroObjectiveSeed) {
+    if (rank == MASTER_NODE) {
+      SU2_TYPE::SetDerivative(ObjFunc, 0.0);
+    } else {
+      SU2_TYPE::SetDerivative(ObjFunc, 0.0);
+    }
+    return;
+  }
+
   su2double seeding = 1.0;
 
   if (config->GetTime_Domain()) {
@@ -408,7 +416,7 @@ void CDiscAdjSinglezoneDriver::SetObjFunction(){
     AD::RegisterOutput(ObjFunc);
   }
 
-  if (rank == MASTER_NODE &&
+  if (!SkipObjectiveSampling && rank == MASTER_NODE &&
       config->GetObjectiveTemporalMode() != OBJFUNC_TEMPORAL_MODE::TIME_AVERAGE) {
     if (auto* dftManager = GetDFTManager()) {
       if (dftManager->IsFinalized()) return;
@@ -504,4 +512,45 @@ void CDiscAdjSinglezoneDriver::SecondaryRecording(){
 
   AD::ClearAdjoints();
 
+}
+
+void CDiscAdjSinglezoneDriver::PropagateInitialConditionAdjoint() {
+
+  if (config->GetKind_Solver() != MAIN_SOLVER::DISC_ADJ_INC_EULER &&
+      config->GetKind_Solver() != MAIN_SOLVER::DISC_ADJ_INC_NAVIER_STOKES &&
+      config->GetKind_Solver() != MAIN_SOLVER::DISC_ADJ_INC_RANS &&
+      config->GetKind_Solver() != MAIN_SOLVER::DISC_ADJ_EULER &&
+      config->GetKind_Solver() != MAIN_SOLVER::DISC_ADJ_NAVIER_STOKES &&
+      config->GetKind_Solver() != MAIN_SOLVER::DISC_ADJ_RANS) {
+    return;
+  }
+
+  const auto original_time_marching = config->GetTime_Marching();
+  const auto original_time_iter = config->GetTimeIter();
+  const auto original_physical_time = config->GetPhysicalTime();
+
+  if (rank == MASTER_NODE) {
+    cout << "Propagating adjoint through the steady initial condition." << endl;
+  }
+
+  ZeroObjectiveSeed = true;
+  SkipObjectiveSampling = true;
+  StopCalc = false;
+  RecordingState = RECORDING::CLEAR_INDICES;
+
+  Preprocess(0);
+
+  config->SetTime_Marching(TIME_MARCHING::STEADY);
+  config->SetTimeIter(0);
+  config->SetPhysicalTime(0.0);
+  Run();
+
+  config->SetTime_Marching(original_time_marching);
+  config->SetTimeIter(original_time_iter);
+  config->SetPhysicalTime(original_physical_time);
+
+  SecondaryRecording();
+
+  ZeroObjectiveSeed = false;
+  SkipObjectiveSampling = false;
 }

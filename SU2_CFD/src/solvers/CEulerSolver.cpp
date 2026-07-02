@@ -4718,12 +4718,20 @@ void CEulerSolver::SetCoefficient_Gradients(CConfig *config) const{
   config->SetdCL_dAlpha(dCL_dAlpha_);
 }
 
-void CEulerSolver::Evaluate_ObjFunc(const CConfig *config, CSolver**) {
+void CEulerSolver::Evaluate_ObjFunc(const CConfig *config, CSolver** solver) {
 
   unsigned short iMarker_Monitoring, Kind_ObjFunc;
   su2double Weight_ObjFunc;
 
   Total_ComboObj = EvaluateCommonObjFunc(*config);
+
+  if (config->GetKind_ObjFunc(0) == HEAT_RELEASE_GLOBAL &&
+      config->GetKind_Species_Model() == SPECIES_MODEL::FLAMELET &&
+      solver[SPECIES_SOL] != nullptr) {
+    const su2double Weight_ObjFunc_HRR = config->GetWeight_ObjFunc(0);
+    Total_ComboObj -= Weight_ObjFunc_HRR * config->GetHeatReleaseGlobal();
+    Total_ComboObj += Weight_ObjFunc_HRR * solver[SPECIES_SOL]->GetTotal_HeatReleaseObjective();
+  }
 
   /*--- Loop over all monitored markers, add to the 'combo' objective ---*/
 

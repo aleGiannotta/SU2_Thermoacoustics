@@ -1,0 +1,4 @@
+baseline_objective=4.3200210770000003e+03
+adjoint_grad0=-3.9610100000000002e+03
+fd_grad0=-7.6890400000047521e+02
+comparison_file=gradient_comparison_steady.csv

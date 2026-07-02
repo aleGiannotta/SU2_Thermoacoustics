@@ -28,6 +28,8 @@
 #include "../../include/iteration/CDiscAdjFluidIteration.hpp"
 #include "../../include/output/COutput.hpp"
 
+#include <fstream>
+
 void CDiscAdjFluidIteration::Preprocess(COutput* output, CIntegration**** integration, CGeometry**** geometry,
                                         CSolver***** solver, CNumerics****** numerics, CConfig** config,
                                         CSurfaceMovement** surface_movement, CVolumetricMovement*** grid_movement,
@@ -298,25 +300,75 @@ void CDiscAdjFluidIteration::LoadUnsteady_Solution(CGeometry**** geometry, CSolv
       solvers[MESH_0][HEAT_SOL]->LoadRestart(geometries, solvers, config[iZone], DirectIter, false);
     }
   } else {
-    /*--- If there is no solution file we set the freestream condition ---*/
-    if (rank == MASTER_NODE)
-      cout << " Setting freestream conditions at direct iteration " << DirectIter << " for zone " << iZone << "." << endl;
+    string steady_restart_filename = config[iZone]->GetSolution_FileName();
+    const string restart_ext = config[iZone]->GetRead_Binary_Restart() ? ".dat" : ".csv";
+    const auto ext_pos = steady_restart_filename.find_last_of('.');
+    if (ext_pos != string::npos) steady_restart_filename.erase(ext_pos);
+    steady_restart_filename += restart_ext;
 
-    for (auto iMesh = 0u; iMesh <= config[iZone]->GetnMGLevels(); iMesh++) {
-      solvers[iMesh][FLOW_SOL]->SetFreeStream_Solution(config[iZone]);
-      solvers[iMesh][FLOW_SOL]->Preprocessing(geometries[iMesh], solvers[iMesh], config[iZone], iMesh,
-                                              DirectIter, RUNTIME_FLOW_SYS, false);
-      if (turbulent) {
-        solvers[iMesh][TURB_SOL]->SetFreeStream_Solution(config[iZone]);
-        solvers[iMesh][TURB_SOL]->Postprocessing(geometries[iMesh], solvers[iMesh], config[iZone], iMesh);
+    std::ifstream steady_restart_file(steady_restart_filename.c_str(), std::ios::in | std::ios::binary);
+    const bool have_steady_restart = steady_restart_file.good();
+
+    if (have_steady_restart) {
+      if (rank == MASTER_NODE) {
+        cout << " Loading steady restart solution from " << steady_restart_filename
+             << " for direct iteration " << DirectIter << " in zone " << iZone << "." << endl;
       }
+
+      const auto flow_skip_vars = geometries[MESH_0]->GetnDim();
+      auto load_steady_restart = [&](CSolver* target_solver, unsigned long skip_vars) {
+        if (config[iZone]->GetRead_Binary_Restart()) {
+          target_solver->Read_SU2_Restart_Binary(geometries[MESH_0], config[iZone], steady_restart_filename);
+        } else {
+          target_solver->Read_SU2_Restart_ASCII(geometries[MESH_0], config[iZone], steady_restart_filename);
+        }
+        target_solver->BasicLoadRestart(geometries[MESH_0], config[iZone], steady_restart_filename, skip_vars);
+      };
+
+      load_steady_restart(solvers[MESH_0][FLOW_SOL], flow_skip_vars);
+
+      if (turbulent) {
+        unsigned long turb_skip_vars = flow_skip_vars + solvers[MESH_0][FLOW_SOL]->GetnVar();
+        const bool incompressible = (config[iZone]->GetKind_Regime() == ENUM_REGIME::INCOMPRESSIBLE);
+        const bool energy = config[iZone]->GetEnergy_Equation();
+        const bool weakly_coupled_heat = config[iZone]->GetWeakly_Coupled_Heat();
+        const bool flamelet = (config[iZone]->GetKind_FluidModel() == FLUID_FLAMELET);
+        if (incompressible && (!energy) && (!weakly_coupled_heat) && (!flamelet)) turb_skip_vars--;
+        load_steady_restart(solvers[MESH_0][TURB_SOL], turb_skip_vars);
+      }
+
       if (species) {
-        solvers[iMesh][SPECIES_SOL]->SetFreeStream_Solution(config[iZone]);
-        solvers[iMesh][SPECIES_SOL]->Postprocessing(geometries[iMesh], solvers[iMesh], config[iZone], iMesh);
+        unsigned long species_skip_vars =
+            flow_skip_vars + solvers[MESH_0][FLOW_SOL]->GetnVar() + config[iZone]->GetnTurbVar();
+        const bool incompressible = (config[iZone]->GetKind_Regime() == ENUM_REGIME::INCOMPRESSIBLE);
+        const bool energy = config[iZone]->GetEnergy_Equation();
+        const bool weakly_coupled_heat = config[iZone]->GetWeakly_Coupled_Heat();
+        const bool flamelet = (config[iZone]->GetKind_FluidModel() == FLUID_FLAMELET);
+        if (incompressible && (!energy) && (!weakly_coupled_heat) && (!flamelet)) species_skip_vars--;
+        load_steady_restart(solvers[MESH_0][SPECIES_SOL], species_skip_vars);
+      }
+
+      if (config[iZone]->GetWeakly_Coupled_Heat()) {
+        unsigned long heat_skip_vars = flow_skip_vars;
+        if (config[iZone]->GetWeakly_Coupled_Heat()) {
+          heat_skip_vars += 1 + geometries[MESH_0]->GetnDim();
+        }
+        load_steady_restart(solvers[MESH_0][HEAT_SOL], heat_skip_vars);
+      }
+    } else {
+      /*--- Reuse the standard primal initialization path for the pre-window state.
+       *    This keeps the adjoint replay consistent with the direct startup logic
+       *    whenever there is no explicit steady restart state to recover. ---*/
+      if (rank == MASTER_NODE) {
+        cout << " Setting initial conditions at direct iteration " << DirectIter << " for zone " << iZone << "." << endl;
+      }
+
+      solvers[MESH_0][FLOW_SOL]->SetInitialCondition(geometries, solvers, config[iZone], 0);
+      if (species) {
+        solvers[MESH_0][SPECIES_SOL]->SetInitialCondition(geometries, solvers, config[iZone], 0);
       }
       if (config[iZone]->GetWeakly_Coupled_Heat()) {
-        solvers[iMesh][HEAT_SOL]->SetFreeStream_Solution(config[iZone]);
-        solvers[iMesh][HEAT_SOL]->Postprocessing(geometries[iMesh], solvers[iMesh], config[iZone], iMesh);
+        solvers[MESH_0][HEAT_SOL]->SetInitialCondition(geometries, solvers, config[iZone], 0);
       }
     }
   }

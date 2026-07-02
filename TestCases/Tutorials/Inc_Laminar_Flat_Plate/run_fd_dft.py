@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Utility to compute finite-difference sensitivities of the DFT amplitude objective
+Utility to compute finite-difference sensitivities of the DFT objective
 by perturbing each DV_VALUE entry one at a time and re-running SU2_CFD.
 """
 
@@ -60,9 +60,10 @@ def format_dv_block(values: List[float], per_line: int = 5) -> List[str]:
     return lines
 
 
-def read_amplitude_file(path: Path) -> float:
+def read_dft_value(path: Path, mode: str) -> float:
     if not path.exists():
-        raise RuntimeError(f"Amplitude file {path} not found.")
+        raise RuntimeError(f"DFT output file {path} not found.")
+    token_name = mode.upper()
     value = None
     with path.open("r") as handle:
         for line in handle:
@@ -70,13 +71,13 @@ def read_amplitude_file(path: Path) -> float:
             if not stripped or stripped.startswith("#"):
                 continue
             tokens = stripped.replace(",", " ").split()
-            if len(tokens) >= 2 and tokens[0].upper() == "DFT_AMPLITUDE":
+            if len(tokens) >= 2 and tokens[0].upper() == token_name:
                 try:
                     value = float(tokens[1])
                 except ValueError:
                     continue
     if value is None:
-        raise RuntimeError(f"No numeric amplitude found in {path}.")
+        raise RuntimeError(f"No numeric {token_name} found in {path}.")
     return value
 
 
@@ -107,7 +108,7 @@ def replace_option(lines: List[str], option: str, value: str) -> List[str]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Finite-difference check for DFT amplitude gradients.")
+    parser = argparse.ArgumentParser(description="Finite-difference check for DFT objective gradients.")
     parser.add_argument("config", type=Path, help="Path to the baseline SU2 config file.")
     parser.add_argument("--su2-cfd", default="SU2_CFD", help="Executable for SU2_CFD runs.")
     parser.add_argument("--su2-def", default="SU2_DEF", help="Executable for SU2_DEF runs.")
@@ -115,6 +116,8 @@ def main() -> None:
     parser.add_argument("--mpi-procs", type=int, default=4, help="Number of MPI ranks to use when launching SU2.")
     parser.add_argument("--mesh-base", default="mesh.su2", help="Original mesh filename.")
     parser.add_argument("--mesh-def", default="mesh_def.su2", help="Deformed mesh filename to run SU2_CFD.")
+    parser.add_argument("--objective-mode", choices=["auto", "DFT_AMPLITUDE", "DFT_PHASE"], default="auto",
+                        help="DFT objective to compare. Default: read OBJECTIVE_TEMPORAL_MODE from config.")
     parser.add_argument("--log", type=Path, help="Path to log file for partial results.")
     parser.add_argument("--keep-results", action="store_true", help="Keep temporary configs and amplitude copies.")
     args = parser.parse_args()
@@ -125,13 +128,22 @@ def main() -> None:
     start, end, base_values = parse_dv_block(lines)
 
     amplitude_file = None
+    config_mode = None
     for line in lines:
         stripped = line.strip()
         if stripped.startswith("OBJECTIVE_DFT_OUTPUT"):
             amplitude_file = stripped.split("=", 1)[1].strip()
-            break
+        elif stripped.startswith("OBJECTIVE_TEMPORAL_MODE"):
+            config_mode = stripped.split("=", 1)[1].strip().upper()
     if amplitude_file is None:
         raise RuntimeError("OBJECTIVE_DFT_OUTPUT not defined in config.")
+    if args.objective_mode == "auto":
+        if config_mode in {"DFT_AMPLITUDE", "DFT_PHASE"}:
+            objective_mode = config_mode
+        else:
+            raise RuntimeError("OBJECTIVE_TEMPORAL_MODE must be DFT_AMPLITUDE or DFT_PHASE, or pass --objective-mode.")
+    else:
+        objective_mode = args.objective_mode
 
     base_amp_path = (cfg_dir / amplitude_file).resolve()
     if args.log:
@@ -141,7 +153,7 @@ def main() -> None:
     log_path = log_candidate.resolve()
     log_path.parent.mkdir(parents=True, exist_ok=True)
     log_handle = open(log_path, "w", encoding="utf-8")
-    log_handle.write("# DV  Amplitude  FD_Gradient\n")
+    log_handle.write(f"# DV  {objective_mode}  FD_Gradient\n")
     log_handle.flush()
 
     tmp_root = tempfile.mkdtemp(prefix="su2_fd_", dir=cfg_dir)
@@ -156,8 +168,8 @@ def main() -> None:
         base_cfg = tmp_root_path / "fd_base.cfg"
         base_cfg.write_text("".join(base_lines))
         run_su2(args.su2_cfd, base_cfg, cfg_dir, args.mpi_procs)
-        base_amplitude = read_amplitude_file(base_amp_path)
-        print(f"Baseline amplitude: {base_amplitude:.10e}")
+        base_value = read_dft_value(base_amp_path, objective_mode)
+        print(f"Baseline {objective_mode}: {base_value:.10e}")
 
         results = []
         for idx, _ in enumerate(base_values):
@@ -183,12 +195,12 @@ def main() -> None:
             cfg_run.write_text("".join(cfg_run_lines))
             run_su2(args.su2_cfd, cfg_run, cfg_dir, args.mpi_procs)
             amp_file = cfg_dir / perturbed_amp_file
-            amp_plus = read_amplitude_file(amp_file)
+            obj_plus = read_dft_value(amp_file, objective_mode)
 
-            gradient = (amp_plus - base_amplitude) / args.delta
-            results.append((idx, amp_plus, gradient))
+            gradient = (obj_plus - base_value) / args.delta
+            results.append((idx, obj_plus, gradient))
 
-            log_handle.write(f"{idx:04d} {amp_plus:.10e} {gradient:.10e}\n")
+            log_handle.write(f"{idx:04d} {obj_plus:.10e} {gradient:.10e}\n")
             log_handle.flush()
 
             if args.keep_results:
@@ -197,9 +209,9 @@ def main() -> None:
             if def_mesh.exists() and not args.keep_results:
                 def_mesh.unlink()
 
-        print(f"{'DV':>4} {'Amp(+Δ)':>15} {'FD Gradient':>15}")
-        for idx, amp_plus, grad in results:
-            print(f"{idx:>4d} {amp_plus:>15.8e} {grad:>15.8e}")
+        print(f"{'DV':>4} {objective_mode:>15} {'FD Gradient':>15}")
+        for idx, obj_plus, grad in results:
+            print(f"{idx:>4d} {obj_plus:>15.8e} {grad:>15.8e}")
 
     finally:
         log_handle.close()

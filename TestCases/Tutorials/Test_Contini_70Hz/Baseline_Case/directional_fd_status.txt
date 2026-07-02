@@ -1,0 +1,6 @@
+# Directional FD live status
+completed_pairs = 3
+total_pairs = 5
+current_alpha = 1.0000000000000000e+00
+latest_centered_fd = 3.9478387139500271e-01
+latest_rel_diff = 2.2139160432765362e-01

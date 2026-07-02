@@ -637,6 +637,13 @@ private:
   su2double Inlet_Sine_Amplitude;  /*!< \brief Amplitude (dimensionless) for sinusoidal inlet forcing. */
   su2double Inlet_Sine_Frequency;  /*!< \brief Frequency (Hz) for sinusoidal inlet forcing. */
   su2double Inlet_Sine_Phase;      /*!< \brief Phase offset (rad) for sinusoidal inlet forcing. */
+  su2double Inlet_Chirp_Amplitude; /*!< \brief Amplitude (dimensionless) for chirped inlet forcing. */
+  su2double Inlet_Chirp_Freq_Start; /*!< \brief Start frequency (Hz) for chirped inlet forcing. */
+  su2double Inlet_Chirp_Freq_End;   /*!< \brief End frequency (Hz) for chirped inlet forcing. */
+  su2double Inlet_Chirp_Duration;   /*!< \brief Duration (s) of chirped inlet forcing. */
+  su2double Inlet_Chirp_Start_Time; /*!< \brief Start time (s) of chirped inlet forcing. */
+  su2double Inlet_Chirp_Phase;      /*!< \brief Initial phase offset (rad) for chirped inlet forcing. */
+  string Inlet_Chirp_Method;        /*!< \brief Sweep law for chirped inlet forcing (LINEAR or LOGARITHMIC). */
   su2double Inc_Outlet_Damping;    /*!< \brief Damping factor applied to the iterative updates to the pressure at a mass flow outlet in incompressible flow. */
   bool InletUseNormal;             /*!< \brief Flag for whether to use the local normal as the flow direction for a pressure inlet. */
   su2double Linear_Solver_Error;   /*!< \brief Min error of the linear solver for the implicit formulation. */
@@ -5146,6 +5153,13 @@ public:
   su2double GetInletSineAmplitude() const { return Inlet_Sine_Amplitude; }
   su2double GetInletSineFrequency() const { return Inlet_Sine_Frequency; }
   su2double GetInletSinePhase() const { return Inlet_Sine_Phase; }
+  su2double GetInletChirpAmplitude() const { return Inlet_Chirp_Amplitude; }
+  su2double GetInletChirpFreqStart() const { return Inlet_Chirp_Freq_Start; }
+  su2double GetInletChirpFreqEnd() const { return Inlet_Chirp_Freq_End; }
+  su2double GetInletChirpDuration() const { return Inlet_Chirp_Duration; }
+  su2double GetInletChirpStartTime() const { return Inlet_Chirp_Start_Time; }
+  su2double GetInletChirpPhase() const { return Inlet_Chirp_Phase; }
+  string GetInletChirpMethod() const { return Inlet_Chirp_Method; }
 
   /*!
    * \brief Get the damping factor applied to pressure updates at incompressible mass flow outlet.
@@ -5482,6 +5496,12 @@ public:
    *         dual time stepping method (unsteady).
    */
   TIME_MARCHING GetTime_Marching() const { return TimeMarching; }
+
+  /*!
+   * \brief Override the time marching mode at runtime.
+   * \param[in] val_time_marching - Time marching mode.
+   */
+  void SetTime_Marching(TIME_MARCHING val_time_marching) { TimeMarching = val_time_marching; }
 
   /*!
    * \brief Provides the number of species present in the gas mixture.

@@ -1774,6 +1774,12 @@ public:
   inline su2double GetTotal_ComboObj() const { return Total_ComboObj; }
 
   /*!
+   * \brief Get the objective contribution associated with the global heat-release integral.
+   * \return Active heat-release objective contribution if available, otherwise zero.
+   */
+  inline virtual su2double GetTotal_HeatReleaseObjective() const { return 0.0; }
+
+  /*!
    * \brief Sets the value of the custom objective function.
    * \param[in] value - Value of the total custom objective function.
    */

@@ -45,6 +45,8 @@ protected:
   RECORDING SecondaryVariables;                 /*!< \brief The kind of recording linked to the secondary variables of the problem.*/
   int MainSolver;                               /*!< \brief Index of the main adjoint solver. */
   su2double ObjFunc;                            /*!< \brief The value of the objective function.*/
+  bool ZeroObjectiveSeed = false;               /*!< \brief Disable objective seeding for auxiliary adjoint propagation. */
+  bool SkipObjectiveSampling = false;           /*!< \brief Disable DFT/window accumulation for auxiliary passes. */
   CIteration* direct_iteration;                 /*!< \brief A pointer to the direct iteration.*/
 
   CConfig *config;                              /*!< \brief Definition of the particular problem. */
@@ -86,6 +88,11 @@ protected:
    * \brief Record the secondary computational path.
    */
   void SecondaryRecording(void);
+
+  /*!
+   * \brief Propagate the unsteady initial-state adjoint through the steady base state.
+   */
+  void PropagateInitialConditionAdjoint(void);
 
   /*!
    * \brief gets Convergence on physical time scale, (deactivated in adjoint case)
