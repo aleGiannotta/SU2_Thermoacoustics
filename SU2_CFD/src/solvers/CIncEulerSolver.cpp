@@ -2813,10 +2813,6 @@ void CIncEulerSolver::SetResidual_DualTime(CGeometry *geometry, CSolver **solver
       V2U(Density_time_n, Cp, V_time_n, U_time_n);
       V2U(Density, Cp, V_time_nP1, U_time_nP1);
 
-     if (iPoint==100)
-        cout <<"density="<<Density <<", old density="<< Density_time_n <<", density_unsteady="<< Density_unsteady << endl;
-
-
       /*--- CV volume at time n+1. As we are on a static mesh, the volume
        of the CV will remained fixed for all time steps. ---*/
 

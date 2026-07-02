@@ -58,7 +58,7 @@ CSpeciesFlameletSolver::CSpeciesFlameletSolver(CGeometry* geometry, CConfig* con
 
   /*--- Initialize the solution to the far-field state everywhere. ---*/
 
-  nodes = new CSpeciesFlameletVariable(Solution_Inf, nPoint, nDim, nVar, config);
+  nodes = new CSpeciesFlameletVariable(config->GetDensity_FreeStreamND(), Solution_Inf, nPoint, nDim, nVar, config);
   SetBaseClassPointerToNodes();
 
   /*--- Store the initial CFL number for all grid points. ---*/

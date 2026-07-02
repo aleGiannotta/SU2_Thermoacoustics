@@ -45,7 +45,7 @@ CSpeciesSolver::CSpeciesSolver(CGeometry* geometry, CConfig* config, unsigned sh
 
   /*--- Initialize the solution to the far-field state everywhere. ---*/
 
-  nodes = new CSpeciesVariable(Solution_Inf, nPoint, nDim, nVar, config);
+  nodes = new CSpeciesVariable(config->GetDensity_FreeStreamND(), Solution_Inf, nPoint, nDim, nVar, config);
   SetBaseClassPointerToNodes();
 
   /*--- Initialize the mass diffusivity. Nondimensionalization done in the flow solver. ---*/
